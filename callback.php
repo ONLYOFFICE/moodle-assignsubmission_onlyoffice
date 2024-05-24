@@ -175,8 +175,12 @@ switch ($status) {
             }
             $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
             $conversionkey = filemanager::generate_key($file);
+            $pdfparam = [];
+            if ($submissionformat === 'pdf') {
+                $pdfparam['form'] = true;
+            }
 
-            $conversionurl = document_service::get_conversion_url($documenturi, $ext, $submissionformat, $conversionkey);
+            $conversionurl = document_service::get_conversion_url($documenturi, $ext, $submissionformat, $conversionkey, $pdfparam);
 
             if (empty($conversionurl)) {
                 break;

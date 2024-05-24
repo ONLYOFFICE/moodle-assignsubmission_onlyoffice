@@ -201,11 +201,16 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             }
             $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
             $conversionkey = filemanager::generate_key($submissionfile);
+            $pdfparam = [];
+            if ($submissionformat === 'pdf') {
+                $pdfparam['form'] = true;
+            }
 
             $conversionurl = document_service::get_conversion_url($documenturi,
                                                                     $submissionextension,
                                                                     $submissionformat,
-                                                                    $conversionkey);
+                                                                    $conversionkey,
+                                                                    $pdfparam);
 
             filemanager::write($submissionfile, $conversionurl);
             $submissionfile->rename($submissionfile->get_filepath(),
