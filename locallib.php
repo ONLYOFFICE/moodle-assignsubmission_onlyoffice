@@ -91,36 +91,40 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         if ($this->assignment->has_instance()) {
             $assignconfig = $this->get_config();
 
-            $mform->getElement('assignsubmission_onlyoffice_template_type')
-                ->setSelected($assignconfig->templatetype);
-            $mform->freeze('assignsubmission_onlyoffice_template_type');
+            if (property_exists($assignconfig, 'format')) {
+                $mform->getElement('assignsubmission_onlyoffice_format')
+                    ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
+                $mform->freeze('assignsubmission_onlyoffice_format');
 
-            $mform->getElement('assignsubmission_onlyoffice_format')
-                ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
-            $mform->freeze('assignsubmission_onlyoffice_format');
-
-            if ($assignconfig->format === 'docxf') {
-                $mform->addElement('hidden', 'assignsubmission_onlyoffice_hidden_format', $assignconfig->format);
-                $mform->setType('assignsubmission_onlyoffice_hidden_format', PARAM_ALPHA);
-            }
-
-            if ($assignconfig->format === 'upload') {
-                $mform->hideif('assignsubmission_onlyoffice_file', 'assignsubmission_onlyoffice_format', 'eq', 'upload');
-            }
-
-            if ($assignconfig->templatetype === 'custom') {
-                $fulltmplkey = $assignconfig->tmplkey;
-
-                list($origintmplkey, $contextid) = templatekey::parse_contextid($fulltmplkey);
-
-                if ($this->assignment->get_context()->id === $contextid) {
-                    $tmplkey = $origintmplkey;
-                } else {
-                    $tmplkey = uniqid();
-                    $this->set_config('tmplkey', $tmplkey . '_' . $this->assignment->get_context()->id);
+                if ($assignconfig->format === 'docxf') {
+                    $mform->addElement('hidden', 'assignsubmission_onlyoffice_hidden_format', $assignconfig->format);
+                    $mform->setType('assignsubmission_onlyoffice_hidden_format', PARAM_ALPHA);
                 }
-            } else {
-                $initeditor = false;
+
+                if ($assignconfig->format === 'upload') {
+                    $mform->hideif('assignsubmission_onlyoffice_file', 'assignsubmission_onlyoffice_format', 'eq', 'upload');
+                }
+            }
+
+            if (property_exists($assignconfig, 'templatetype')) {
+                $mform->getElement('assignsubmission_onlyoffice_template_type')
+                    ->setSelected($assignconfig->templatetype);
+                $mform->freeze('assignsubmission_onlyoffice_template_type');
+
+                if ($assignconfig->templatetype === 'custom') {
+                    $fulltmplkey = $assignconfig->tmplkey;
+
+                    list($origintmplkey, $contextid) = templatekey::parse_contextid($fulltmplkey);
+
+                    if ($this->assignment->get_context()->id === $contextid) {
+                        $tmplkey = $origintmplkey;
+                    } else {
+                        $tmplkey = uniqid();
+                        $this->set_config('tmplkey', $tmplkey . '_' . $this->assignment->get_context()->id);
+                    }
+                } else {
+                    $initeditor = false;
+                }
             }
 
             $contextid = $this->assignment->get_context()->id;
