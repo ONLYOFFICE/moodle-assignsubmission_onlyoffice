@@ -84,6 +84,7 @@ class filemanager {
      * @param string $name file name.
      * @param string $ext file extension.
      * @param string $userid user identifier.
+     * @param string $filenamesuffix file name suffix.
      *
      * @return stored_file
      */
