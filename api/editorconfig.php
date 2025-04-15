@@ -113,6 +113,10 @@ $config = [
     ],
 ];
 
+if ($format === 'pdf') {
+    $config['document']['isForm'] = true;
+}
+
 $canedit = in_array('.' . $ext, onlyoffice_file_utility::get_editable_extensions());
 
 $editable = false;
