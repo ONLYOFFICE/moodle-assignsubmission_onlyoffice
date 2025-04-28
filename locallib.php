@@ -26,8 +26,9 @@ use mod_onlyofficeeditor\document_service;
 use mod_onlyofficeeditor\configuration_manager;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
-use assignsubmission_onlyoffice\output\content;
 use assignsubmission_onlyoffice\output\error;
+use assignsubmission_onlyoffice\output\settings;
+use assignsubmission_onlyoffice\output\submission;
 use assignsubmission_onlyoffice\utility;
 use mod_onlyofficeeditor\onlyoffice_file_utility;
 
@@ -138,10 +139,8 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             $mform->addElement('hidden', 'assignsubmission_onlyoffice_tmplkey', $tmplkey);
             $mform->setType('assignsubmission_onlyoffice_tmplkey', PARAM_ALPHANUM);
 
-            $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
-            $mform->addElement('html', $OUTPUT->render(
-                new content($documentserverurl, $contextid, 0, false, $tmplkey)
-            ));
+            $settingsrenderable = new settings($contextid);
+            $mform->addElement('html', $OUTPUT->render($settingsrenderable));
         }
 
         $mform->hideif('assignsubmission_onlyoffice_format', 'assignsubmission_onlyoffice_enabled', 'notchecked');
@@ -215,8 +214,6 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         global $USER;
 
         $cfg = $this->get_config();
-
-        $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
         $contextid = $this->assignment->get_context()->id;
 
         $initialfile = null;
@@ -301,15 +298,14 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                                     $this->assignment->get_instance()->name . $submission->id . '.' . $submissionformat);
         }
 
-        $mform->addElement('html', $OUTPUT->render(
-            new content(
-                $documentserverurl,
-                $contextid,
-                $submission->id,
-                false,
-                null,
-                $isform ? $cfg->templatetype : null)
-        ));
+        $submissionrenderable = new submission(
+            $contextid,
+            $submission->id,
+            false,
+            $cfg->format,
+            $cfg->templatetype
+        );
+        $mform->addElement('html', $OUTPUT->render($submissionrenderable));
 
         return true;
     }
@@ -323,7 +319,6 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function view(stdClass $submission) {
         global $OUTPUT;
 
-        $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
         $contextid = $this->assignment->get_context()->id;
 
         $submissionfile = filemanager::get($contextid, $submission->id);
@@ -331,7 +326,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             return get_string('filenotfound', 'assignsubmission_onlyoffice');
         }
 
-        $html = $OUTPUT->render(new content($documentserverurl, $contextid, $submission->id, true));
+        $html = $OUTPUT->render(new submission($contextid, $submission->id, true));
 
         return $html;
     }
