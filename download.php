@@ -27,8 +27,8 @@ require_once(__DIR__.'/../../../../config.php');
 require_once(__DIR__.'/../../locallib.php');
 // phpcs:enable
 
-use mod_onlyofficeeditor\onlyoffice_file_utility;
 use assignsubmission_onlyoffice\filemanager;
+use assignsubmission_onlyoffice\templatekey;
 
 global $USER;
 global $DB;
@@ -103,7 +103,9 @@ if (!isset($tmplkey)) {
 } else {
     $canread = !empty($context) ? has_capability('moodle/course:manageactivities', $context) : true;
 
-    $file = filemanager::get_template($contextid);
+    if (templatekey::get_contextid($tmplkey) === $contextid) {
+        $file = filemanager::get_template($contextid);
+    }
 }
 
 if (!$canread) {
