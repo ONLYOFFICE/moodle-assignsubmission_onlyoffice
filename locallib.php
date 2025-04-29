@@ -200,15 +200,18 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $cfg = $this->get_config();
         $contextid = $this->assignment->get_context()->id;
 
-        $initialfile = null;
-        if ($cfg->templatetype === 'custom') {
-            $initialfile = filemanager::get_initial($contextid);
-        }
+        $initialfile = filemanager::get_initial($contextid);
 
         $submissionformat = utility::get_form_format();
 
         $isform = $cfg->format === 'pdf' || $cfg->format === 'docxf';
         $submissionfile = filemanager::get($contextid, $submission->id);
+
+        if ($initialfile && $submissionfile
+            && $initialfile->get_timemodified() > $submissionfile->get_timemodified()) {
+            $submissionfile->delete();
+            $submissionfile = null;
+        }
 
         if (!!$this->assignment->get_instance()->teamsubmission) {
             $filenamesuffix = $submission->groupid == "0" ? 'default' : groups_get_group_name($submission->groupid);
@@ -244,12 +247,6 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             ));
 
             return true;
-        }
-
-        if ($initialfile !== null
-            && $initialfile->get_timemodified() > $submissionfile->get_timemodified()) {
-            $submissionfile->replace_file_with($initialfile);
-            $submissionfile->set_timemodified(time());
         }
 
         $submissionfilename = $submissionfile->get_filename();
