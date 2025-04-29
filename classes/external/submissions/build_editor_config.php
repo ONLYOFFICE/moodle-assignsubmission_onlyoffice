@@ -68,10 +68,6 @@ class build_editor_config extends external_api {
         global $USER;
         global $DB;
 
-        $contextsystem = context_system::instance();
-        self::validate_context($contextsystem);
-        require_capability('moodle/site:config', $contextsystem);
-
         [
             'contextid' => $contextid,
             'submissionid' => $submissionid,
@@ -85,6 +81,13 @@ class build_editor_config extends external_api {
             'format' => $format,
             'templatetype' => $templatetype,
         ]);
+
+        $context = \context::instance_by_id($contextid);
+        $coursecontext = $context->get_course_context();
+
+        if (!has_capability('mod/assign:submit', $coursecontext) && !has_capability('mod/assign:grade', $coursecontext)) {
+            throw new \moodle_exception('You do not have the required permissions to access this submission.');
+        }
 
         $modconfig = get_config('onlyofficeeditor');
         $storageurl = configuration_manager::get_storage_url();
