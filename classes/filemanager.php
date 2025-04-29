@@ -127,6 +127,7 @@ class filemanager {
             'filename' => static::generate_filename($name, $filenamesuffix, $ext),
             'userid' => $userid,
             'timecreated' => time(),
+            'timemodified' => time(),
         ];
 
         $newfile = $fs->create_file_from_storedfile($fr, $initial);
@@ -186,6 +187,7 @@ class filemanager {
             'filename' => static::generate_filename('', 0, pathinfo($file->get_filename(), PATHINFO_EXTENSION)),
             'filepath' => '/',
             'userid' => $file->get_userid(),
+            'timemodified' => time(),
         ];
         return $fs->create_file_from_storedfile($fr, $file);
     }
@@ -261,6 +263,7 @@ class filemanager {
             'filename' => $file->get_filename(),
             'filepath' => '/',
             'userid' => $file->get_userid(),
+            'timemodified' => time(),
         ];
 
         return $fs->create_file_from_storedfile($fr, $file);
@@ -285,6 +288,7 @@ class filemanager {
             'filename' => $file->get_filename(),
             'filepath' => '/',
             'userid' => $file->get_userid(),
+            'timemodified' => time(),
         ];
         return $fs->create_file_from_storedfile($fr, $file);
     }
