@@ -56,7 +56,6 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         global $OUTPUT;
 
         $contextid = 0;
-        $initeditor = true;
         $tmplkey = null;
 
         $assignconfig = new stdClass();
@@ -90,6 +89,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $mform->addHelpButton('assignsubmission_onlyoffice_template_type', 'templatetype', 'assignsubmission_onlyoffice');
 
         if ($this->assignment->has_instance()) {
+            $contextid = $this->assignment->get_context()->id;
             $assignconfig = $this->get_config();
 
             if (property_exists($assignconfig, 'format')) {
@@ -111,37 +111,21 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 $mform->getElement('assignsubmission_onlyoffice_template_type')
                     ->setSelected($assignconfig->templatetype);
                 $mform->freeze('assignsubmission_onlyoffice_template_type');
-
-                if ($assignconfig->templatetype === 'custom') {
-                    $fulltmplkey = $assignconfig->tmplkey;
-
-                    list($origintmplkey, $contextid) = templatekey::parse_contextid($fulltmplkey);
-
-                    if ($this->assignment->get_context()->id === $contextid) {
-                        $tmplkey = $origintmplkey;
-                    } else {
-                        $tmplkey = uniqid();
-                        $this->set_config('tmplkey', $tmplkey . '_' . $this->assignment->get_context()->id);
-                    }
-                } else {
-                    $initeditor = false;
-                }
             }
 
-            $contextid = $this->assignment->get_context()->id;
+            list($origintmplkey, $contextid) = templatekey::parse_contextid($assignconfig->tmplkey);
+            $tmplkey = $origintmplkey;
         } else {
             // Set pdf as default.
             $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('pdf');
         }
 
-        if ($initeditor) {
-            $tmplkey = isset($tmplkey) ? $tmplkey : uniqid();
-            $mform->addElement('hidden', 'assignsubmission_onlyoffice_tmplkey', $tmplkey);
-            $mform->setType('assignsubmission_onlyoffice_tmplkey', PARAM_ALPHANUM);
+        $tmplkey = $tmplkey ?? uniqid();
+        $mform->addElement('hidden', 'assignsubmission_onlyoffice_tmplkey', $tmplkey);
+        $mform->setType('assignsubmission_onlyoffice_tmplkey', PARAM_ALPHANUM);
 
-            $settingsrenderable = new settings($contextid);
-            $mform->addElement('html', $OUTPUT->render($settingsrenderable));
-        }
+        $settingsrenderable = new settings($contextid);
+        $mform->addElement('html', $OUTPUT->render($settingsrenderable));
 
         $mform->hideif('assignsubmission_onlyoffice_format', 'assignsubmission_onlyoffice_enabled', 'notchecked');
         $mform->hideif('assignsubmission_onlyoffice_template_type', 'assignsubmission_onlyoffice_enabled', 'notchecked');
