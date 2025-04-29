@@ -105,8 +105,7 @@ class build_editor_config extends external_api {
 
         $submission = $DB->get_record('assign_submission', ['id' => $submissionid]);
         if (!$submission) {
-            http_response_code(404);
-            die();
+            throw new \moodle_exception('Submission not found');
         }
 
         $groupmode = !!$assign->get_instance()->teamsubmission;
@@ -114,8 +113,7 @@ class build_editor_config extends external_api {
         $file = filemanager::get($contextid, $submissionid);
 
         if ($file === null) {
-            http_response_code(404);
-            die();
+            throw new \moodle_exception('File not found');
         }
 
         $filename = $file->get_filename();
@@ -176,8 +174,7 @@ class build_editor_config extends external_api {
             $viewable = $assign->can_grade() || $editable;
 
             if (!$viewable) {
-                http_response_code(403);
-                die();
+                throw new \moodle_exception('You do not have the required permissions to view this submission.');
             }
 
             $config['editorConfig']['mode'] = 'view';
