@@ -140,45 +140,56 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return bool - on error the subtype should call set_error and return false.
      */
     public function save_settings(stdClass $data) {
+        global $USER;
+
+        $templatetype = $data->assignsubmission_onlyoffice_template_type;
+        $format = $data->assignsubmission_onlyoffice_format;
+        $contextid = $this->assignment->get_context()->id;
+        $tmplkey = $data->assignsubmission_onlyoffice_tmplkey;
+
         $this->set_config(
             'templatetype',
-            $data->assignsubmission_onlyoffice_format === 'upload' ? 'custom' : $data->assignsubmission_onlyoffice_template_type
+            $format === 'upload' ? 'custom' : $templatetype
         );
-        $this->set_config('format', $data->assignsubmission_onlyoffice_format);
+        $this->set_config('format', $format);
 
-        if ($data->assignsubmission_onlyoffice_format === 'upload') {
-            global $USER;
-            $usercontext = \context_user::instance($USER->id);
-            $fs = get_file_storage();
-            $files = $fs->get_area_files(
-                $usercontext->id,
-                'user',
-                'draft',
-                $data->assignsubmission_onlyoffice_file,
-                'sortorder, id',
-                false
-            );
-            $file = reset($files);
-            filemanager::create_template_from_uploaded_file($this->assignment->get_context()->id, $file);
-            filemanager::create_initial_from_uploaded_file($this->assignment->get_context()->id, $file);
-        } else {
-            $format = isset($data->assignsubmission_onlyoffice_hidden_format)
-            ? $data->assignsubmission_onlyoffice_hidden_format
-            : $data->assignsubmission_onlyoffice_format;
-            $this->set_config('format', $format);
+        if (templatekey::get_contextid($tmplkey) !== $contextid) {
+            filemanager::delete_template($contextid);
+            filemanager::delete_initial($contextid);
         }
 
-        if (
-            $data->assignsubmission_onlyoffice_template_type === 'custom'
-            || $data->assignsubmission_onlyoffice_format === 'upload'
-        ) {
-            if (isset($data->assignsubmission_onlyoffice_tmplkey)) {
-                $this->set_config(
-                    'tmplkey',
-                    $data->assignsubmission_onlyoffice_tmplkey . '_' . $this->assignment->get_context()->id
+        if (!filemanager::get_template($contextid)) {
+            if ($format === 'upload') {
+                $usercontext = \context_user::instance($USER->id);
+                $fs = get_file_storage();
+                $files = $fs->get_area_files(
+                    $usercontext->id,
+                    'user',
+                    'draft',
+                    $data->assignsubmission_onlyoffice_file,
+                    'sortorder, id',
+                    false
                 );
+                $file = reset($files);
+                filemanager::create_template_from_uploaded_file($contextid, $file);
+                filemanager::create_initial_from_uploaded_file($contextid, $file);
+            } else {
+                $format = isset($data->assignsubmission_onlyoffice_hidden_format)
+                ? $data->assignsubmission_onlyoffice_hidden_format
+                : $data->assignsubmission_onlyoffice_format;
+                $this->set_config('format', $format);
+    
+                $file = filemanager::create_template(
+                    $contextid,
+                    $format,
+                    $USER->id,
+                    $templatetype === 'custom'
+                );
+                filemanager::create_initial_from_file($file);
             }
         }
+
+        $this->set_config('tmplkey', $tmplkey . '_' . $contextid);
 
         return true;
     }
