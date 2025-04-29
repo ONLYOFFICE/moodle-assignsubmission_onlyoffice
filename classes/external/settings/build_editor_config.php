@@ -62,10 +62,6 @@ class build_editor_config extends external_api {
     public static function execute($contextid, $key, $format, $templatetype) {
         global $USER;
 
-        $contextsystem = context_system::instance();
-        self::validate_context($contextsystem);
-        require_capability('moodle/site:config', $contextsystem);
-
         [
             'contextid' => $contextid,
             'key' => $key,
@@ -77,6 +73,12 @@ class build_editor_config extends external_api {
             'format' => $format,
             'templatetype' => $templatetype,
         ]);
+
+        if ($contextid != 0) {
+            $context = \context::instance_by_id($contextid);
+            $coursecontext = $context->get_course_context();
+            require_capability('mod/assign:addinstance', $coursecontext);
+        }
 
         $modconfig = get_config('onlyofficeeditor');
         $storageurl = configuration_manager::get_storage_url();
