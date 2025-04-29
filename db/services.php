@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die;
 
 $functions = [
     'assignsubmission_onlyoffice_build_settings_editor_config' => [
-        'capabilities' => 'moodle/course:manageactivities',
+        'capabilities' => 'mod/assign:addinstance',
         'classname'   => 'assignsubmission_onlyoffice\external\settings\build_editor_config',
         'description' => 'Builds editor config for assign settings.',
         'type'        => 'write',
@@ -36,7 +36,7 @@ $functions = [
         ],
     ],
     'assignsubmission_onlyoffice_build_submission_editor_config' => [
-        'capabilities' => 'moodle/assign:submit',
+        'capabilities' => 'moodle/assign:submit,mod/assign:grade',
         'classname'   => 'assignsubmission_onlyoffice\external\submissions\build_editor_config',
         'description' => 'Builds editor config for submissions.',
         'type'        => 'write',
