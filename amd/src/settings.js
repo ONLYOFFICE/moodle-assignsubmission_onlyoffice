@@ -40,7 +40,7 @@ define([
 
     const closeEditor = function() {
         if (docEditor) {
-            docEditor.destroy();
+            docEditor.destroyEditor();
             docEditor = null;
         }
     };
@@ -64,6 +64,7 @@ define([
             const templatekeyelement = document.querySelector("input[name='assignsubmission_onlyoffice_tmplkey']");
             const originalformat = selectformat.value;
             const originaltemplatekey = templatekeyelement.value;
+            const originaltemplatetype = selecttemplatetype.value;
 
             if (enabletoggleelement.checked && selecttemplatetype.value === 'custom') {
                 openEditor(
@@ -91,13 +92,13 @@ define([
             });
 
             selectformat.addEventListener('change', async function(e) {
-                if (e.currentTarget.value !== 'upload' && selecttemplatetype.value === 'custom') {
-                    if (e.currentTarget.value === originalformat) {
-                        templatekeyelement.value = originaltemplatekey;
-                    } else {
-                        templatekeyelement.value = generateUniqueId();
-                    }
+                if (e.currentTarget.value === originalformat && selecttemplatetype.value === originaltemplatetype) {
+                    templatekeyelement.value = originaltemplatekey;
+                } else {
+                    templatekeyelement.value = generateUniqueId();
+                }
 
+                if (e.currentTarget.value !== 'upload' && selecttemplatetype.value === 'custom') {
                     openEditor(
                         contextid,
                         templatekeyelement.value,
@@ -110,6 +111,12 @@ define([
             });
 
             selecttemplatetype.addEventListener('change', function(e) {
+                if (e.currentTarget.value === originalformat && selecttemplatetype.value === originaltemplatetype) {
+                    templatekeyelement.value = originaltemplatekey;
+                } else {
+                    templatekeyelement.value = generateUniqueId();
+                }
+
                 if (e.currentTarget.value === 'custom' && selectformat.value !== 'upload') {
                     openEditor(
                         contextid,
