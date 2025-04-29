@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The assign_submission_onlyoffice download handler
+ * The assign_submission_onlyoffice submission file download handler
  *
  * @package    assignsubmission_onlyoffice
  * @copyright  2024 Ascensio System SIA <integration@onlyoffice.com>
@@ -28,11 +28,11 @@ require_once(__DIR__.'/../../locallib.php');
 // phpcs:enable
 
 use assignsubmission_onlyoffice\filemanager;
-use assignsubmission_onlyoffice\templatekey;
 
 global $USER;
 global $DB;
 
+// JWT authentication
 $modconfig = get_config('onlyofficeeditor');
 if (!empty($modconfig->documentserversecret)) {
     $jwtheader = !empty($modconfig->jwtheader) ? $modconfig->jwtheader : 'Authorization';
@@ -45,6 +45,7 @@ if (!empty($modconfig->documentserversecret)) {
     }
 }
 
+// Get and validate the document hash
 $doc = required_param('doc', PARAM_RAW);
 
 $crypt = new \mod_onlyofficeeditor\hasher();
@@ -55,25 +56,19 @@ if ($error || $hash === null) {
     die();
 }
 
-if ($hash->action !== 'download') {
-    http_response_code(400);
-    die();
-}
-
+// Extract required parameters
 $contextid = $hash->contextid;
-$itemid = $hash->itemid;
-$tmplkey = $hash->tmplkey;
+$submissionid = $hash->submissionid;
 $userid = $hash->userid;
-$format = $hash->format;
-$templatetype = $hash->templatetype;
 
-$user = null;
+// Initialize variables
 $canread = false;
 $context = null;
-$assing = null;
+$assign = null;
 $submission = null;
 $file = null;
 
+// Set up user
 $user = \core_user::get_user($userid);
 if (empty($user)) {
     http_response_code(400);
@@ -82,50 +77,39 @@ if (empty($user)) {
 
 $USER = $user;
 
+// Get context and assignment
 if ($contextid !== 0) {
     list($context, $course, $cm) = get_context_info_array($contextid);
-    $assing = new assign($context, $cm, $course);
+    $assign = new assign($context, $cm, $course);
 }
 
-if (!isset($tmplkey)) {
-    $submission = $DB->get_record('assign_submission', ['id' => $itemid]);
-    if (!$submission) {
-        http_response_code(400);
-        die();
-    }
-
-    if (!empty($assing)) {
-        $canread = !!$assing->get_instance()->teamsubmission ? $assing->can_view_group_submission($submission->groupid)
-                                          : $assing->can_view_submission($submission->userid);
-    }
-
-    $file = filemanager::get($contextid, $itemid);
-} else {
-    $canread = !empty($context) ? has_capability('moodle/course:manageactivities', $context) : true;
-
-    if (templatekey::get_contextid($tmplkey) === $contextid) {
-        $file = filemanager::get_template($contextid);
-    }
+// Get submission and check permissions
+$submission = $DB->get_record('assign_submission', ['id' => $submissionid]);
+if (!$submission) {
+    http_response_code(400);
+    die();
 }
 
+if (!empty($assign)) {
+    $canread = !!$assign->get_instance()->teamsubmission ? 
+        $assign->can_view_group_submission($submission->groupid) : 
+        $assign->can_view_submission($submission->userid);
+}
+
+// Get the file
+$file = filemanager::get($contextid, $submissionid);
+
+// Check read permission
 if (!$canread) {
     http_response_code(403);
     die();
 }
 
+// Check if file exists
 if ($file === null) {
-    if (isset($tmplkey) && isset($format) && $format !== 'upload') {
-        $withsample = $templatetype === 'custom';
-        $templatepath = filemanager::get_template_path($format, $withsample);
-        $templatename = pathinfo($templatepath, PATHINFO_BASENAME);
-
-        send_file($templatepath, $templatename, 0, 0, false, false, '', false, []);
-
-        return;
-    } else {
-        http_response_code(404);
-        die();
-    }
+    http_response_code(404);
+    die();
 }
 
+// Serve the file
 send_stored_file($file);
