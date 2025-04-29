@@ -77,7 +77,8 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             'subdirs' => 0,
         ];
 
-        $mform->addElement('filemanager', 'assignsubmission_onlyoffice_file', null, null, $filemanageroptions);
+        $filemanager = $mform->createElement('filemanager', 'assignsubmission_onlyoffice_file', null, null, $filemanageroptions);
+        $mform->addElement($filemanager);
 
         $templatetypes = [
             'empty' => get_string('templatetype:empty', 'assignsubmission_onlyoffice'),
@@ -103,7 +104,16 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 }
 
                 if ($assignconfig->format === 'upload') {
-                    $mform->hideif('assignsubmission_onlyoffice_file', 'assignsubmission_onlyoffice_format', 'eq', 'upload');
+                    $draftitemid = 0;
+                    file_prepare_draft_area(
+                        $draftitemid,
+                        $contextid,
+                        filemanager::COMPONENT_NAME,
+                        filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+                        0,
+                        $filemanageroptions
+                    );
+                    $filemanager->setValue($draftitemid);
                 }
             }
 
