@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The assign_submission_onlyoffice download handler
+ * The assign_submission_onlyoffice callback handler for submission
  *
  * @package    assignsubmission_onlyoffice
- * @copyright  2024 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,11 +28,7 @@ require_once(__DIR__.'/../../locallib.php');
 // phpcs:enable
 
 use mod_onlyofficeeditor\util;
-use mod_onlyofficeeditor\document_service;
 use assignsubmission_onlyoffice\filemanager;
-use assignsubmission_onlyoffice\templatekey;
-use assignsubmission_onlyoffice\utility;
-use mod_onlyofficeeditor\configuration_manager;
 
 global $USER;
 global $DB;
@@ -48,17 +44,9 @@ if ($error || $hash === null) {
     die();
 }
 
-if ($hash->action !== 'track') {
-    http_response_code(400);
-    die();
-}
-
 $contextid = $hash->contextid;
-$itemid = $hash->itemid;
-$tmplkey = $hash->tmplkey;
+$submissionid = $hash->submissionid;
 $callbackuserid = $hash->userid;
-$format = $hash->format;
-$templatetype = $hash->templatetype;
 
 $bodystream = file_get_contents('php://input');
 $data = json_decode($bodystream);
@@ -115,24 +103,12 @@ switch ($status) {
             $USER = $user;
         }
 
-        if ($contextid === 0) {
-            $contextid = templatekey::get_contextid($tmplkey);
-        }
-        if ($contextid === 0) {
-            http_response_code(400);
-            die();
-        }
-
         list($context, $course, $cm) = get_context_info_array($contextid);
-        if (isset($tmplkey)) {
-            $canwrite = has_capability('moodle/course:manageactivities', $context);
-        } else {
-            $assing = new assign($context, $cm, $course);
-            $submission = $DB->get_record('assign_submission', ['id' => $itemid]);
-            if ($submission) {
-                $canwrite = !!$submission->groupid ? $assing->can_edit_group_submission($submission->groupid)
-                                                   : $assing->can_edit_submission($submission->userid);
-            }
+        $assing = new assign($context, $cm, $course);
+        $submission = $DB->get_record('assign_submission', ['id' => $submissionid]);
+        if ($submission) {
+            $canwrite = !!$submission->groupid ? $assing->can_edit_group_submission($submission->groupid)
+                                               : $assing->can_edit_submission($submission->userid);
         }
 
         if (!$canwrite) {
@@ -140,13 +116,7 @@ switch ($status) {
             die();
         }
 
-        $file = !isset($tmplkey) ? filemanager::get($contextid, $itemid) : filemanager::get_template($contextid);
-        if (empty($file) && isset($tmplkey) && isset($format) && $format !== 'upload') {
-            $withsample = $templatetype === 'custom';
-            $file = filemanager::create_template($contextid, $format, $itemid, $withsample);
-            $mustsaveinitial = true;
-        }
-
+        $file = filemanager::get($contextid, $submissionid);
         if (empty($file)) {
             http_response_code(404);
             die();
@@ -154,55 +124,6 @@ switch ($status) {
 
         if (isset($url)) {
             filemanager::write($file, $url);
-
-            if (isset($tmplkey)) {
-                $mustsaveinitial = true;
-            }
-        }
-
-        $filename = $file->get_filename();
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-
-        if ($mustsaveinitial) {
-            if ($ext === 'docxf') {
-                $submissionformat = utility::get_form_format();
-
-                $crypt = new \mod_onlyofficeeditor\hasher();
-                $downloadhash = $crypt->get_hash([
-                    'action' => 'download',
-                    'contextid' => $contextid,
-                    'itemid' => 0,
-                    'tmplkey' => $tmplkey,
-                    'userid' => $USER->id,
-                ]);
-
-                $storageurl = $CFG->wwwroot;
-                if (class_exists('mod_onlyofficeeditor\configuration_manager')) {
-                    $storageurl = configuration_manager::get_storage_url();
-                }
-                $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
-                $conversionkey = filemanager::generate_key($file);
-
-                $conversionurl = document_service::get_conversion_url($documenturi, $ext, $submissionformat, $conversionkey);
-
-                if (empty($conversionurl)) {
-                    break;
-                }
-
-                $initialfile = filemanager::get_initial($contextid);
-                if ($initialfile === null) {
-                    filemanager::create_initial($contextid, $submissionformat, $itemid, $conversionurl);
-                } else {
-                    filemanager::write($initialfile, $conversionurl);
-                }
-            } else {
-                $initialfile = filemanager::get_initial($contextid);
-                if ($initialfile === null) {
-                    filemanager::create_initial_from_file($file);
-                } else {
-                    filemanager::write_to_initial_from_file($initialfile, $file);
-                }
-            }
         }
 
         $result = 0;
