@@ -49,7 +49,7 @@ class build_editor_config extends external_api {
         return new external_function_parameters([
             'contextid' => new external_value(PARAM_INT, 'context id'),
             'submissionid' => new external_value(PARAM_INT, 'submission id'),
-            'readonly' => new external_value(PARAM_TEXT, 'readonly'),
+            'readonly' => new external_value(PARAM_BOOL, 'readonly'),
             'format' => new external_value(PARAM_TEXT, 'format'),
             'templatetype' => new external_value(PARAM_TEXT, 'templatetype'),
         ]);
@@ -122,13 +122,9 @@ class build_editor_config extends external_api {
 
         $crypt = new \mod_onlyofficeeditor\hasher();
         $downloadhash = $crypt->get_hash([
-            'action' => 'download',
             'contextid' => $contextid,
-            'itemid' => $submissionid,
-            'tmplkey' => $key,
-            'userid' => $USER->id,
-            'format' => $format,
-            'templatetype' => $templatetype,
+            'submissionid' => $submissionid,
+            'userid' => $USER->id
         ]);
 
         $config = [
@@ -136,7 +132,7 @@ class build_editor_config extends external_api {
                 'fileType' => $ext,
                 'key' => $key,
                 'title' => $filename,
-                'url' => $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash,
+                'url' => $storageurl . '/mod/assign/submission/onlyoffice/download_submission.php?doc=' . $downloadhash,
             ],
             'documentType' => onlyoffice_file_utility::get_document_type('.' . $ext),
             'editorConfig' => [
@@ -160,16 +156,12 @@ class build_editor_config extends external_api {
         $config['document']['permissions']['edit'] = $editable;
         if ($editable && $canedit && !$readonly) {
             $callbackhash = $crypt->get_hash([
-                'action' => 'track',
                 'contextid' => $contextid,
-                'itemid' => $submissionid,
-                'tmplkey' => $key,
+                'submissionid' => $submissionid,
                 'userid' => $USER->id,
-                'format' => $format,
-                'templatetype' => $templatetype,
             ]);
             $config['editorConfig']['callbackUrl'] = $storageurl .
-                '/mod/assign/submission/onlyoffice/callback.php?doc=' .
+                '/mod/assign/submission/onlyoffice/callback_submission.php?doc=' .
                 $callbackhash;
             // Disable editing for users who has a student role assigned.
 
