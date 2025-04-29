@@ -181,6 +181,17 @@ class filemanager {
 
         $filename = 'template.' . pathinfo($file->get_filename(), PATHINFO_EXTENSION);
 
+        $templatefiles = $fs->get_area_files(
+            $contextid,
+            self::COMPONENT_NAME,
+            self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+            0,
+        );
+
+        foreach ($templatefiles as $templatefile) {
+            $templatefile->delete();
+        }
+
         $fr = [
             'contextid' => $contextid,
             'component' => self::COMPONENT_NAME,
@@ -287,6 +298,17 @@ class filemanager {
 
         $filename = 'initial.' . pathinfo($file->get_filename(), PATHINFO_EXTENSION);
 
+        $initialfiles = $fs->get_area_files(
+            $contextid,
+            self::COMPONENT_NAME,
+            self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
+            0,
+        );
+
+        foreach ($initialfiles as $initialfile) {
+            $initialfile->delete();
+        }
+
         $fr = [
             'contextid' => $contextid,
             'component' => self::COMPONENT_NAME,
@@ -309,8 +331,13 @@ class filemanager {
      * @return void
      */
     public static function write_to_initial_from_file($initial, $file) {
-        $initial->replace_file_with($file);
-        $initial->set_timemodified(time());
+        if ($initial->get_mimetype() !== $file->get_mimetype()) {
+            self::create_initial_from_file($file);
+            $initial->delete();
+        } else {
+            $initial->replace_file_with($file);
+            $initial->set_timemodified(time());
+        }
     }
 
     /**
