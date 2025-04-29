@@ -179,12 +179,14 @@ class filemanager {
     public static function create_template_from_uploaded_file($contextid, $file) {
         $fs = get_file_storage();
 
+        $filename = 'template.' . pathinfo($file->get_filename(), PATHINFO_EXTENSION);
+
         $fr = [
             'contextid' => $contextid,
             'component' => self::COMPONENT_NAME,
             'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
             'itemid' => 0,
-            'filename' => static::generate_filename('', 0, pathinfo($file->get_filename(), PATHINFO_EXTENSION)),
+            'filename' => $filename,
             'filepath' => '/',
             'userid' => $file->get_userid(),
             'timemodified' => time(),
@@ -228,12 +230,15 @@ class filemanager {
     public static function write($file, $url) {
         $fs = get_file_storage();
 
+        $filename = pathinfo($file->get_filename(), PATHINFO_FILENAME);
+        $ext = pathinfo($file->get_filename(), PATHINFO_EXTENSION);
+
         $fr = [
             'contextid' => $file->get_contextid(),
             'component' => $file->get_component(),
             'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_DRAFT,
             'itemid' => $file->get_itemid(),
-            'filename' => $file->get_filename() . '_temp',
+            'filename' => $filename . '_temp' . '.' . $ext,
             'filepath' => '/',
             'userid' => $file->get_userid(),
             'timecreated' => $file->get_timecreated(),
@@ -280,12 +285,14 @@ class filemanager {
     public static function create_initial_from_uploaded_file($contextid, $file) {
         $fs = get_file_storage();
 
+        $filename = 'initial.' . pathinfo($file->get_filename(), PATHINFO_EXTENSION);
+
         $fr = [
             'contextid' => $contextid,
             'component' => self::COMPONENT_NAME,
             'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
             'itemid' => 0,
-            'filename' => $file->get_filename(),
+            'filename' => $filename,
             'filepath' => '/',
             'userid' => $file->get_userid(),
             'timemodified' => time(),
