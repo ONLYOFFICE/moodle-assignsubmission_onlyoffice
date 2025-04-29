@@ -341,6 +341,32 @@ class filemanager {
     }
 
     /**
+     * Delete file from onlyoffice assign initial area
+     *
+     * @param int $contextid context identifier.
+     *
+     * @return void
+     */
+    public static function delete_initial($contextid) {
+        $fs = get_file_storage();
+
+        $fs->delete_area_files($contextid, self::COMPONENT_NAME, self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL, 0);
+    }
+
+    /**
+     * Delete file from onlyoffice assign template area
+     *
+     * @param int $contextid context identifier.
+     *
+     * @return void
+     */
+    public static function delete_template($contextid) {
+        $fs = get_file_storage();
+
+        $fs->delete_area_files($contextid, self::COMPONENT_NAME, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, 0);
+    }
+
+    /**
      * Delete file from onlyoffice file area
      *
      * @param int $contextid context identifier.
