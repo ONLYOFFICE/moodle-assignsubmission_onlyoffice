@@ -97,7 +97,8 @@ class templatekey {
     public static function replace_record($originalkey, $newkey) {
         global $DB;
 
-        $sql = "UPDATE {assign_plugin_config} SET value = :newkey WHERE plugin = 'onlyoffice' AND name = 'tmplkey' AND value LIKE :originalkey";
+        $sql = "UPDATE {assign_plugin_config} SET value = :newkey"
+            . " WHERE plugin = 'onlyoffice' AND name = 'tmplkey' AND value LIKE :originalkey";
 
         return $DB->execute($sql, ['newkey' => $newkey, 'originalkey' => $originalkey . '%']);
     }

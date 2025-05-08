@@ -34,14 +34,14 @@ try {
     $request = new settings_download_request();
     $handler = new settings_download_handler($request);
     $result = $handler();
-    
+
     if (is_array($result)) {
-        // Handle file path and filename
+        // Handle file path and filename.
         send_file($result['path'], $result['filename'], 0, 0, false, false, '', false, []);
     } else {
-        // Handle stored_file object
+        // Handle stored_file object.
         send_stored_file($result);
     }
 } catch (\Exception $e) {
-    error_log($e->getMessage());
+    debugging($e->getMessage());
 }

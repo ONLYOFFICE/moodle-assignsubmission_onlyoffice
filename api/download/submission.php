@@ -37,5 +37,5 @@ try {
     $file = $handler();
     send_stored_file($file);
 } catch (\Exception $e) {
-    error_log($e->getMessage());
+    debugging($e->getMessage());
 }

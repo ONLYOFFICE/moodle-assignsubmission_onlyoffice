@@ -35,7 +35,7 @@ try {
     $handler = new submission_callback_handler($request);
     $result = $handler();
 } catch (\Exception $e) {
-    error_log($e->getMessage());
+    debugging($e->getMessage());
     $result = submission_callback_handler::RESULT_ERROR;
 }
 

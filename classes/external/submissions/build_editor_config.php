@@ -125,7 +125,7 @@ class build_editor_config extends external_api {
         $downloadhash = $crypt->get_hash([
             'contextid' => $contextid,
             'submissionid' => $submissionid,
-            'userid' => $USER->id
+            'userid' => $USER->id,
         ]);
 
         $config = [
