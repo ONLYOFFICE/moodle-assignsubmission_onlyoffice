@@ -133,7 +133,7 @@ class build_editor_config extends external_api {
                 'fileType' => $ext,
                 'key' => $key,
                 'title' => $filename,
-                'url' => $storageurl . '/mod/assign/submission/onlyoffice/download_submission.php?doc=' . $downloadhash,
+                'url' => $storageurl . '/mod/assign/submission/onlyoffice/api/download/submission.php?doc=' . $downloadhash,
             ],
             'documentType' => onlyoffice_file_utility::get_document_type('.' . $ext),
             'editorConfig' => [
@@ -162,7 +162,7 @@ class build_editor_config extends external_api {
                 'userid' => $USER->id,
             ]);
             $config['editorConfig']['callbackUrl'] = $storageurl .
-                '/mod/assign/submission/onlyoffice/callback_submission.php?doc=' .
+                '/mod/assign/submission/onlyoffice/api/callback/submission.php?doc=' .
                 $callbackhash;
             // Disable editing for users who has a student role assigned.
 
