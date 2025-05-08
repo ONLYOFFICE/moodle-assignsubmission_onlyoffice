@@ -105,7 +105,7 @@ class build_editor_config extends external_api {
                 'fileType' => $ext,
                 'key' => $key,
                 'title' => $filename,
-                'url' => $storageurl . '/mod/assign/submission/onlyoffice/download_template.php?doc=' . $downloadhash,
+                'url' => $storageurl . '/mod/assign/submission/onlyoffice/api/download/settings.php?doc=' . $downloadhash,
             ],
             'documentType' => onlyoffice_file_utility::get_document_type('.' . $ext),
             'editorConfig' => [
@@ -135,7 +135,7 @@ class build_editor_config extends external_api {
             'templatetype' => $templatetype,
         ]);
         $config['editorConfig']['callbackUrl'] = $storageurl .
-            '/mod/assign/submission/onlyoffice/callback_template.php?doc=' .
+            '/mod/assign/submission/onlyoffice/api/callback/settings.php?doc=' .
             $callbackhash;
 
         $customization = [];
