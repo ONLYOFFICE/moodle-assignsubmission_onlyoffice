@@ -24,9 +24,14 @@
  */
 $string['assignformat'] = 'Format (ONLYOFFICE)';
 $string['enabled'] = 'ONLYOFFICE document';
+$string['enablecomment:label'] = 'Students feedback on graded files';
+$string['enablecomment'] = 'Enable student comments';
 $string['enabled_help'] = 'If enabled, students are able to use ONLYOFFICE for their submission.';
 $string['filenotfound'] = 'File not found';
 $string['formnotready'] = 'Form is not ready yet. Please wait a bit and reload the page.';
+$string['mentionsubject'] = 'New comment from a {$a->type}';
+$string['mentionmessage'] = '{$a->type} {$a->name} commented {$a->document}';
+$string['messageprovider:submissioncommentnotifier'] = 'ONLYOFFICE submission document comment notification';
 $string['pdfformname'] = 'Form';
 $string['pluginname'] = 'ONLYOFFICE document';
 $string['templatetype'] = 'File template (ONLYOFFICE)';
