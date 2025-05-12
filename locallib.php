@@ -92,11 +92,29 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         if ($this->assignment->has_instance()) {
             $contextid = $this->assignment->get_context()->id;
             $assignconfig = $this->get_config();
+            $hassubmission = $this->assignment->count_submissions_with_status(ASSIGN_SUBMISSION_STATUS_SUBMITTED);
+
+            if ($hassubmission) {
+                $hassubmissionalert = $OUTPUT->notification(
+                    get_string('hassubmissionswarning', 'assignsubmission_onlyoffice'),
+                    'warning'
+                );
+                $hassubmissionwarning = $mform->createElement(
+                    'html',
+                    $OUTPUT->render_from_template(
+                        'assignsubmission_onlyoffice/hassubmissionalert',
+                        ['alert' => $hassubmissionalert]
+                    )
+                );
+                $mform->insertElementBefore($hassubmissionwarning, 'assignsubmission_onlyoffice_format');
+            }
 
             if (property_exists($assignconfig, 'format')) {
                 $mform->getElement('assignsubmission_onlyoffice_format')
                     ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
-                $mform->freeze('assignsubmission_onlyoffice_format');
+                if ($hassubmission) {
+                    $mform->freeze('assignsubmission_onlyoffice_format');
+                }
 
                 if ($assignconfig->format === 'docxf') {
                     $mform->addElement('hidden', 'assignsubmission_onlyoffice_hidden_format', $assignconfig->format);
@@ -120,7 +138,9 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             if (property_exists($assignconfig, 'templatetype')) {
                 $mform->getElement('assignsubmission_onlyoffice_template_type')
                     ->setSelected($assignconfig->templatetype);
-                $mform->freeze('assignsubmission_onlyoffice_template_type');
+                if ($hassubmission) {
+                    $mform->freeze('assignsubmission_onlyoffice_template_type');
+                }
             }
 
             list($origintmplkey, $contextid) = templatekey::parse_contextid($assignconfig->tmplkey);
@@ -188,7 +208,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 ? $data->assignsubmission_onlyoffice_hidden_format
                 : $data->assignsubmission_onlyoffice_format;
                 $this->set_config('format', $format);
-    
+
                 $file = filemanager::create_template(
                     $contextid,
                     $format,
