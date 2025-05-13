@@ -175,7 +175,9 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function save_settings(stdClass $data) {
         global $USER;
 
-        $templatetype = $data->assignsubmission_onlyoffice_template_type;
+        $templatetype = property_exists($data, 'assignsubmission_onlyoffice_template_type')
+            ? $data->assignsubmission_onlyoffice_template_type
+            : null;
         $format = $data->assignsubmission_onlyoffice_format;
         $contextid = $this->assignment->get_context()->id;
         $tmplkey = $data->assignsubmission_onlyoffice_tmplkey;
