@@ -114,6 +114,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                     ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
                 if ($hassubmission) {
                     $mform->freeze('assignsubmission_onlyoffice_format');
+                    $mform->hideIf('assignsubmission_onlyoffice_file', 'assignsubmission_onlyoffice_format', 'eq', 'upload');
                 }
 
                 if ($assignconfig->format === 'docxf') {
