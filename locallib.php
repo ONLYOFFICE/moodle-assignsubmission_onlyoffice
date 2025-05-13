@@ -144,8 +144,10 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 }
             }
 
-            list($origintmplkey, $contextid) = templatekey::parse_contextid($assignconfig->tmplkey);
-            $tmplkey = $origintmplkey;
+            if (property_exists($assignconfig, 'tmplkey') && $assignconfig->tmplkey) {
+                list($origintmplkey, $contextid) = templatekey::parse_contextid($assignconfig->tmplkey);
+                $tmplkey = $origintmplkey;
+            }
         } else {
             // Set pdf as default.
             $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('pdf');
