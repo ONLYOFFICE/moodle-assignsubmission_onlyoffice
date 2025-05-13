@@ -188,30 +188,37 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         );
         $this->set_config('format', $format);
 
-        if (templatekey::get_contextid($tmplkey) !== $contextid) {
-            filemanager::delete_template($contextid);
-            filemanager::delete_initial($contextid);
-        }
+        if ($format === 'upload') {
+            $usercontext = \context_user::instance($USER->id);
+            $fs = get_file_storage();
+            $files = $fs->get_area_files(
+                $usercontext->id,
+                'user',
+                'draft',
+                $data->assignsubmission_onlyoffice_file,
+                'sortorder, id',
+                false
+            );
+            $file = reset($files);
+            if ($file) {
+                // Delete existing files first.
+                filemanager::delete_template($contextid);
+                filemanager::delete_initial($contextid);
 
-        if (!filemanager::get_template($contextid)) {
-            if ($format === 'upload') {
-                $usercontext = \context_user::instance($USER->id);
-                $fs = get_file_storage();
-                $files = $fs->get_area_files(
-                    $usercontext->id,
-                    'user',
-                    'draft',
-                    $data->assignsubmission_onlyoffice_file,
-                    'sortorder, id',
-                    false
-                );
-                $file = reset($files);
+                // Create new files from the uploaded file.
                 filemanager::create_template_from_uploaded_file($contextid, $file);
                 filemanager::create_initial_from_uploaded_file($contextid, $file);
-            } else {
+            }
+        } else {
+            if (templatekey::get_contextid($tmplkey) !== $contextid) {
+                filemanager::delete_template($contextid);
+                filemanager::delete_initial($contextid);
+            }
+
+            if (!filemanager::get_template($contextid)) {
                 $format = isset($data->assignsubmission_onlyoffice_hidden_format)
-                ? $data->assignsubmission_onlyoffice_hidden_format
-                : $data->assignsubmission_onlyoffice_format;
+                    ? $data->assignsubmission_onlyoffice_hidden_format
+                    : $data->assignsubmission_onlyoffice_format;
                 $this->set_config('format', $format);
 
                 $file = filemanager::create_template(
