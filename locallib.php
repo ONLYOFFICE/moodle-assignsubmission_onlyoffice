@@ -188,7 +188,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 ? $data->assignsubmission_onlyoffice_hidden_format
                 : $data->assignsubmission_onlyoffice_format;
                 $this->set_config('format', $format);
-    
+
                 $file = filemanager::create_template(
                     $contextid,
                     $format,
