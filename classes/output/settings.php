@@ -73,6 +73,8 @@ class settings implements \renderable, named_templatable {
     /**
      * Gets the name of the mustache template used to render the data.
      *
+     * @param \renderer_base $renderer renderer to be used.
+     *
      * @return string
      */
     public function get_template_name(\renderer_base $renderer): string {
