@@ -15,18 +15,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version and other meta-info about the plugin
+ * The assign_submission_onlyoffice callback handler for templates
  *
  * @package    assignsubmission_onlyoffice
  * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+use assignsubmission_onlyoffice\local\http\handlers\download\settings_download_handler;
+use assignsubmission_onlyoffice\local\http\requests\download\settings_download_request;
 
-$plugin->component = 'assignsubmission_onlyoffice';
-$plugin->version = 2024111300;
-$plugin->release = 'v3.0.0';
-$plugin->requires = 2022041900;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = ['mod_onlyofficeeditor' => 2024111300];
+// phpcs:ignore moodle.Files.RequireLogin.Missing
+require_once(__DIR__.'/../../../../../../config.php');
+require_once(__DIR__.'/../../../../locallib.php');
+// phpcs:enable
+
+try {
+    $request = new settings_download_request();
+    $handler = new settings_download_handler($request);
+    $result = $handler();
+
+    if (is_array($result)) {
+        // Handle file path and filename.
+        send_file($result['path'], $result['filename'], 0, 0, false, false, '', false, []);
+    } else {
+        // Handle stored_file object.
+        send_stored_file($result);
+    }
+} catch (\Exception $e) {
+    debugging($e->getMessage());
+}

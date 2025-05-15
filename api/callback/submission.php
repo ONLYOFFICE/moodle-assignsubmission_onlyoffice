@@ -15,18 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version and other meta-info about the plugin
+ * The assign_submission_onlyoffice callback handler for submission
  *
  * @package    assignsubmission_onlyoffice
  * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+// phpcs:ignore moodle.Files.RequireLogin.Missing
+require_once(__DIR__.'/../../../../../../config.php');
+require_once(__DIR__.'/../../../../locallib.php');
+// phpcs:enable
 
-$plugin->component = 'assignsubmission_onlyoffice';
-$plugin->version = 2024111300;
-$plugin->release = 'v3.0.0';
-$plugin->requires = 2022041900;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = ['mod_onlyofficeeditor' => 2024111300];
+use assignsubmission_onlyoffice\local\http\requests\callback\submission_callback_request;
+use assignsubmission_onlyoffice\local\http\handlers\callback\submission_callback_handler;
+
+try {
+    $request = new submission_callback_request();
+    $handler = new submission_callback_handler($request);
+    $result = $handler();
+} catch (\Exception $e) {
+    debugging($e->getMessage());
+    $result = submission_callback_handler::RESULT_ERROR;
+}
+
+http_response_code(200);
+echo(json_encode(['error' => $result]));

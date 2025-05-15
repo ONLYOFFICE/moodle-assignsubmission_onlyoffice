@@ -18,7 +18,7 @@
  * The assign_submission_onlyoffice class
  *
  * @package    assignsubmission_onlyoffice
- * @copyright  2024 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -26,8 +26,9 @@ use mod_onlyofficeeditor\document_service;
 use mod_onlyofficeeditor\configuration_manager;
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\templatekey;
-use assignsubmission_onlyoffice\output\content;
 use assignsubmission_onlyoffice\output\error;
+use assignsubmission_onlyoffice\output\settings;
+use assignsubmission_onlyoffice\output\submission;
 use assignsubmission_onlyoffice\utility;
 use mod_onlyofficeeditor\onlyoffice_file_utility;
 
@@ -55,7 +56,6 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         global $OUTPUT;
 
         $contextid = 0;
-        $initeditor = true;
         $tmplkey = null;
 
         $assignconfig = new stdClass();
@@ -77,7 +77,8 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             'subdirs' => 0,
         ];
 
-        $mform->addElement('filemanager', 'assignsubmission_onlyoffice_file', null, null, $filemanageroptions);
+        $filemanager = $mform->createElement('filemanager', 'assignsubmission_onlyoffice_file', null, null, $filemanageroptions);
+        $mform->addElement($filemanager);
 
         $templatetypes = [
             'empty' => get_string('templatetype:empty', 'assignsubmission_onlyoffice'),
@@ -89,6 +90,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $mform->addHelpButton('assignsubmission_onlyoffice_template_type', 'templatetype', 'assignsubmission_onlyoffice');
 
         if ($this->assignment->has_instance()) {
+            $contextid = $this->assignment->get_context()->id;
             $assignconfig = $this->get_config();
 
             if (property_exists($assignconfig, 'format')) {
@@ -102,7 +104,16 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 }
 
                 if ($assignconfig->format === 'upload') {
-                    $mform->hideif('assignsubmission_onlyoffice_file', 'assignsubmission_onlyoffice_format', 'eq', 'upload');
+                    $draftitemid = 0;
+                    file_prepare_draft_area(
+                        $draftitemid,
+                        $contextid,
+                        filemanager::COMPONENT_NAME,
+                        filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+                        0,
+                        $filemanageroptions
+                    );
+                    $filemanager->setValue($draftitemid);
                 }
             }
 
@@ -110,39 +121,21 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 $mform->getElement('assignsubmission_onlyoffice_template_type')
                     ->setSelected($assignconfig->templatetype);
                 $mform->freeze('assignsubmission_onlyoffice_template_type');
-
-                if ($assignconfig->templatetype === 'custom') {
-                    $fulltmplkey = $assignconfig->tmplkey;
-
-                    list($origintmplkey, $contextid) = templatekey::parse_contextid($fulltmplkey);
-
-                    if ($this->assignment->get_context()->id === $contextid) {
-                        $tmplkey = $origintmplkey;
-                    } else {
-                        $tmplkey = uniqid();
-                        $this->set_config('tmplkey', $tmplkey . '_' . $this->assignment->get_context()->id);
-                    }
-                } else {
-                    $initeditor = false;
-                }
             }
 
-            $contextid = $this->assignment->get_context()->id;
+            list($origintmplkey, $contextid) = templatekey::parse_contextid($assignconfig->tmplkey);
+            $tmplkey = $origintmplkey;
         } else {
             // Set pdf as default.
             $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('pdf');
         }
 
-        if ($initeditor) {
-            $tmplkey = isset($tmplkey) ? $tmplkey : uniqid();
-            $mform->addElement('hidden', 'assignsubmission_onlyoffice_tmplkey', $tmplkey);
-            $mform->setType('assignsubmission_onlyoffice_tmplkey', PARAM_ALPHANUM);
+        $tmplkey = $tmplkey ?? uniqid();
+        $mform->addElement('hidden', 'assignsubmission_onlyoffice_tmplkey', $tmplkey);
+        $mform->setType('assignsubmission_onlyoffice_tmplkey', PARAM_ALPHANUM);
 
-            $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
-            $mform->addElement('html', $OUTPUT->render(
-                new content($documentserverurl, $contextid, 0, false, $tmplkey)
-            ));
-        }
+        $settingsrenderable = new settings($contextid);
+        $mform->addElement('html', $OUTPUT->render($settingsrenderable));
 
         $mform->hideif('assignsubmission_onlyoffice_format', 'assignsubmission_onlyoffice_enabled', 'notchecked');
         $mform->hideif('assignsubmission_onlyoffice_template_type', 'assignsubmission_onlyoffice_enabled', 'notchecked');
@@ -157,45 +150,56 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @return bool - on error the subtype should call set_error and return false.
      */
     public function save_settings(stdClass $data) {
+        global $USER;
+
+        $templatetype = $data->assignsubmission_onlyoffice_template_type;
+        $format = $data->assignsubmission_onlyoffice_format;
+        $contextid = $this->assignment->get_context()->id;
+        $tmplkey = $data->assignsubmission_onlyoffice_tmplkey;
+
         $this->set_config(
             'templatetype',
-            $data->assignsubmission_onlyoffice_format === 'upload' ? 'custom' : $data->assignsubmission_onlyoffice_template_type
+            $format === 'upload' ? 'custom' : $templatetype
         );
-        $this->set_config('format', $data->assignsubmission_onlyoffice_format);
+        $this->set_config('format', $format);
 
-        if ($data->assignsubmission_onlyoffice_format === 'upload') {
-            global $USER;
-            $usercontext = \context_user::instance($USER->id);
-            $fs = get_file_storage();
-            $files = $fs->get_area_files(
-                $usercontext->id,
-                'user',
-                'draft',
-                $data->assignsubmission_onlyoffice_file,
-                'sortorder, id',
-                false
-            );
-            $file = reset($files);
-            filemanager::create_template_from_uploaded_file($this->assignment->get_context()->id, $file);
-            filemanager::create_initial_from_uploaded_file($this->assignment->get_context()->id, $file);
-        } else {
-            $format = isset($data->assignsubmission_onlyoffice_hidden_format)
-            ? $data->assignsubmission_onlyoffice_hidden_format
-            : $data->assignsubmission_onlyoffice_format;
-            $this->set_config('format', $format);
+        if (templatekey::get_contextid($tmplkey) !== $contextid) {
+            filemanager::delete_template($contextid);
+            filemanager::delete_initial($contextid);
         }
 
-        if (
-            $data->assignsubmission_onlyoffice_template_type === 'custom'
-            || $data->assignsubmission_onlyoffice_format === 'upload'
-        ) {
-            if (isset($data->assignsubmission_onlyoffice_tmplkey)) {
-                $this->set_config(
-                    'tmplkey',
-                    $data->assignsubmission_onlyoffice_tmplkey . '_' . $this->assignment->get_context()->id
+        if (!filemanager::get_template($contextid)) {
+            if ($format === 'upload') {
+                $usercontext = \context_user::instance($USER->id);
+                $fs = get_file_storage();
+                $files = $fs->get_area_files(
+                    $usercontext->id,
+                    'user',
+                    'draft',
+                    $data->assignsubmission_onlyoffice_file,
+                    'sortorder, id',
+                    false
                 );
+                $file = reset($files);
+                filemanager::create_template_from_uploaded_file($contextid, $file);
+                filemanager::create_initial_from_uploaded_file($contextid, $file);
+            } else {
+                $format = isset($data->assignsubmission_onlyoffice_hidden_format)
+                ? $data->assignsubmission_onlyoffice_hidden_format
+                : $data->assignsubmission_onlyoffice_format;
+                $this->set_config('format', $format);
+
+                $file = filemanager::create_template(
+                    $contextid,
+                    $format,
+                    $USER->id,
+                    $templatetype === 'custom'
+                );
+                filemanager::create_initial_from_file($file);
             }
         }
+
+        $this->set_config('tmplkey', $tmplkey . '_' . $contextid);
 
         return true;
     }
@@ -215,19 +219,20 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         global $USER;
 
         $cfg = $this->get_config();
-
-        $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
         $contextid = $this->assignment->get_context()->id;
 
-        $initialfile = null;
-        if ($cfg->templatetype === 'custom') {
-            $initialfile = filemanager::get_initial($contextid);
-        }
+        $initialfile = filemanager::get_initial($contextid);
 
         $submissionformat = utility::get_form_format();
 
         $isform = $cfg->format === 'pdf' || $cfg->format === 'docxf';
         $submissionfile = filemanager::get($contextid, $submission->id);
+
+        if ($initialfile && $submissionfile
+            && $initialfile->get_timemodified() > $submissionfile->get_timemodified()) {
+            $submissionfile->delete();
+            $submissionfile = null;
+        }
 
         if (!!$this->assignment->get_instance()->teamsubmission) {
             $filenamesuffix = $submission->groupid == "0" ? 'default' : groups_get_group_name($submission->groupid);
@@ -265,12 +270,6 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             return true;
         }
 
-        if ($initialfile !== null
-            && $initialfile->get_timemodified() > $submissionfile->get_timemodified()) {
-            $submissionfile->replace_file_with($initialfile);
-            $submissionfile->set_timemodified(time());
-        }
-
         $submissionfilename = $submissionfile->get_filename();
         $submissionextension = strtolower(pathinfo($submissionfilename, PATHINFO_EXTENSION));
         if ($isform
@@ -301,15 +300,14 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                                     $this->assignment->get_instance()->name . $submission->id . '.' . $submissionformat);
         }
 
-        $mform->addElement('html', $OUTPUT->render(
-            new content(
-                $documentserverurl,
-                $contextid,
-                $submission->id,
-                false,
-                null,
-                $isform ? $cfg->templatetype : null)
-        ));
+        $submissionrenderable = new submission(
+            $contextid,
+            $submission->id,
+            false,
+            $cfg->format,
+            $cfg->templatetype
+        );
+        $mform->addElement('html', $OUTPUT->render($submissionrenderable));
 
         return true;
     }
@@ -323,7 +321,6 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function view(stdClass $submission) {
         global $OUTPUT;
 
-        $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
         $contextid = $this->assignment->get_context()->id;
 
         $submissionfile = filemanager::get($contextid, $submission->id);
@@ -331,7 +328,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             return get_string('filenotfound', 'assignsubmission_onlyoffice');
         }
 
-        $html = $OUTPUT->render(new content($documentserverurl, $contextid, $submission->id, true));
+        $html = $OUTPUT->render(new submission($contextid, $submission->id, true));
 
         return $html;
     }
