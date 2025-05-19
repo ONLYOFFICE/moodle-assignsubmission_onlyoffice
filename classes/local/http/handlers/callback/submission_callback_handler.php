@@ -26,6 +26,8 @@ namespace assignsubmission_onlyoffice\local\http\handlers\callback;
 
 use assignsubmission_onlyoffice\filemanager;
 use assignsubmission_onlyoffice\local\http\requests\callback\submission_callback_request;
+use core\message\message;
+use core_user;
 
 /**
  * Submission callback handler
@@ -67,8 +69,142 @@ class submission_callback_handler extends callback_handler {
 
         if (isset($this->request->callbackdata->url)) {
             filemanager::write($file, $this->request->callbackdata->url);
+
+            if ($this->request->notifyusers) {
+                $this->notify_users_about_comment();
+            }
         }
 
         return self::RESULT_OK;
+    }
+
+    /**
+     * Notify users about comment
+     */
+    private function notify_users_about_comment() {
+        $users = $this->collect_users_for_notification();
+
+        foreach ($users as $user) {
+            $this->notify_user($user);
+        }
+    }
+
+    /**
+     * Notify a user about a comment
+     *
+     * @param stdClass $recipient The user record
+     * @return void
+     */
+    private function notify_user($recipient) {
+        global $DB;
+
+        // Check if the user is a grader.
+        $isgrader = has_capability('mod/assign:grade', $this->request->context, $recipient);
+
+        if ($isgrader) {
+            // For graders, generate a URL to the grading page.
+            // Get the grade ID.
+            $grade = $DB->get_record('assign_grades', [
+                'assignment' => $this->request->submission->assignment,
+                'userid' => $recipient->id,
+            ], 'id', IGNORE_MULTIPLE);
+            $gid = $grade ? $grade->id : 0;
+
+            // URL for graders to view the submission.
+            $url = new \moodle_url('/mod/assign/view.php', [
+                'id' => $this->request->cm->id,
+                'sid' => $this->request->submission->id,
+                'gid' => $gid,
+                'plugin' => 'onlyoffice',
+                'action' => 'viewpluginassignsubmission',
+                'returnaction' => 'grading',
+            ]);
+        } else {
+            // For students, generate a URL to the submission view page.
+            $url = new \moodle_url('/mod/assign/view.php', [
+                'id' => $this->request->cm->id,
+                'action' => 'view',
+            ]);
+        }
+
+        $usertype = has_capability('mod/assign:grade', $this->request->context, $this->request->callbackuser)
+            ? 'teacher'
+            : 'student';
+        $userfullname = fullname($this->request->callbackuser);
+        $document = $this->request->cm->name;
+        $messagesubject = get_string('mentionsubject', 'assignsubmission_onlyoffice', ['type' => $usertype]);
+        $messagebody = get_string(
+            'mentionmessage',
+            'assignsubmission_onlyoffice',
+            ['type' => ucfirst($usertype), 'name' => $userfullname, 'document' => $document]
+        );
+
+        $message = new message();
+        $message->component = 'assignsubmission_onlyoffice';
+        $message->name = 'submissioncommentnotifier';
+        $message->userfrom = core_user::get_noreply_user();
+        $message->userto = $recipient;
+        $message->subject = $messagesubject;
+        $message->fullmessage = $messagebody;
+        $message->fullmessageformat = FORMAT_PLAIN;
+        $message->fullmessagehtml = null;
+        $message->notification = 1;
+        $message->contexturl = $url;
+        $message->contexturlname = $document;
+        message_send($message);
+    }
+
+    /**
+     * Collect users for notification
+     *
+     * @return array
+     */
+    private function collect_users_for_notification() {
+        global $DB;
+
+        $users = [];
+        $isteacher = has_capability('mod/assign:grade', $this->request->context, $this->request->callbackuser);
+
+        if ($isteacher) {
+            // Teacher viewing submission - add students.
+            if ($this->request->assign->get_instance()->teamsubmission) {
+                // Team submission - add all group members.
+                if (!empty($this->request->submission->groupid) && $this->request->submission->groupid != 0) {
+                    $groupmembers = groups_get_members($this->request->submission->groupid, 'u.*');
+                    foreach ($groupmembers as $member) {
+                        if (!empty($member->email)) {
+                            $users[] = $member;
+                        }
+                    }
+                }
+                // For "default" group (groupid = 0), can't track any specific users.
+            } else {
+                // Individual submission - add just the submitting student.
+                $student = $DB->get_record('user', ['id' => $this->request->submission->userid]);
+                if ($student && !empty($student->email)) {
+                    $users[] = $student;
+                }
+            }
+        } else {
+            // Student viewing submission - add teachers.
+            $teachers = get_enrolled_users($this->request->context, 'mod/assign:grade');
+            foreach ($teachers as $teacher) {
+                if (!empty($teacher->email)) {
+                    $users[] = $teacher;
+                }
+            }
+        }
+
+        // Remove current user.
+        foreach ($users as $key => $user) {
+            if ($user->email === $this->request->callbackuser->email) {
+                unset($users[$key]);
+                break;
+            }
+        }
+
+        $users = array_values($users);
+
+        return $users;
     }
 }

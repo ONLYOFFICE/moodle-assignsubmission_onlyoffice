@@ -84,8 +84,10 @@ class build_editor_config extends external_api {
 
         $context = \context::instance_by_id($contextid);
         $coursecontext = $context->get_course_context();
+        $cansubmit = has_capability('mod/assign:submit', $coursecontext);
+        $cangrade = has_capability('mod/assign:grade', $coursecontext);
 
-        if (!has_capability('mod/assign:submit', $coursecontext) && !has_capability('mod/assign:grade', $coursecontext)) {
+        if (!$cansubmit && !$cangrade) {
             throw new \moodle_exception('You do not have the required permissions to access this submission.');
         }
 
@@ -98,10 +100,14 @@ class build_editor_config extends external_api {
         $file = null;
         $groupmode = false;
 
-        if ($contextid !== 0) {
-            list($context, $course, $cm) = get_context_info_array($contextid);
-            $assign = new \assign($context, $cm, $course);
-        }
+        list($context, $course, $cm) = get_context_info_array($contextid);
+        $assign = new \assign($context, $cm, $course);
+
+        // Get the ONLYOFFICE submission plugin.
+        $onlyofficeplugin = $assign->get_submission_plugin_by_type('onlyoffice');
+
+        // Get the plugin configuration.
+        $onlyofficepluginconfig = $onlyofficeplugin->get_config();
 
         $submission = $DB->get_record('assign_submission', ['id' => $submissionid]);
         if (!$submission) {
@@ -171,13 +177,23 @@ class build_editor_config extends external_api {
                 $config['document']['permissions']['fillForms'] = true;
             }
         } else {
-            $viewable = $assign->can_grade() || $editable;
+            if ($cangrade || $cansubmit && $onlyofficepluginconfig->enablecomment) {
+                $callbackhash = $crypt->get_hash([
+                    'contextid' => $contextid,
+                    'submissionid' => $submissionid,
+                    'userid' => $USER->id,
+                    'notifyusers' => true,
+                ]);
+                $config['editorConfig']['callbackUrl'] = $storageurl .
+                    '/mod/assign/submission/onlyoffice/api/callback/submission.php?doc=' .
+                    $callbackhash;
 
-            if (!$viewable) {
-                throw new \moodle_exception('You do not have the required permissions to view this submission.');
+                $config['editorConfig']['mode'] = 'edit';
+                $config['document']['permissions']['edit'] = false;
+                $config['document']['permissions']['comment'] = true;
+            } else {
+                $config['editorConfig']['mode'] = 'view';
             }
-
-            $config['editorConfig']['mode'] = 'view';
         }
 
         $config['document']['permissions']['protect'] = false;

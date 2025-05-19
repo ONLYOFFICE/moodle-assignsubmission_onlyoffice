@@ -89,6 +89,13 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             get_string('templatetype', 'assignsubmission_onlyoffice'), $templatetypes);
         $mform->addHelpButton('assignsubmission_onlyoffice_template_type', 'templatetype', 'assignsubmission_onlyoffice');
 
+        $mform->addElement(
+            'advcheckbox',
+            'assignsubmission_onlyoffice_enablecomment',
+            get_string('enablecomment:label', 'assignsubmission_onlyoffice'),
+            get_string('enablecomment', 'assignsubmission_onlyoffice')
+        );
+
         if ($this->assignment->has_instance()) {
             $contextid = $this->assignment->get_context()->id;
             $assignconfig = $this->get_config();
@@ -107,6 +114,11 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                     )
                 );
                 $mform->insertElementBefore($hassubmissionwarning, 'assignsubmission_onlyoffice_format');
+            }
+
+            if (property_exists($assignconfig, 'enablecomment')) {
+                $mform->getElement('assignsubmission_onlyoffice_enablecomment')
+                    ->setChecked($assignconfig->enablecomment);
             }
 
             if (property_exists($assignconfig, 'format')) {
@@ -164,6 +176,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $mform->hideif('assignsubmission_onlyoffice_template_type', 'assignsubmission_onlyoffice_enabled', 'notchecked');
         $mform->disabledif('assignsubmission_onlyoffice_template_type', 'assignsubmission_onlyoffice_format', 'eq', 'upload');
         $mform->hideif('assignsubmission_onlyoffice_file', 'assignsubmission_onlyoffice_format', 'neq', 'upload');
+        $mform->hideif('assignsubmission_onlyoffice_enablecomment', 'assignsubmission_onlyoffice_enabled', 'notchecked');
     }
 
     /**
@@ -187,6 +200,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             $format === 'upload' ? 'custom' : $templatetype
         );
         $this->set_config('format', $format);
+        $this->set_config('enablecomment', $data->assignsubmission_onlyoffice_enablecomment);
 
         if ($format === 'upload') {
             $usercontext = \context_user::instance($USER->id);
