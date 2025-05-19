@@ -176,15 +176,8 @@ class submission_callback_handler extends callback_handler {
                             $users[] = $member;
                         }
                     }
-                } else {
-                    // For "default" group (groupid = 0), get all students in the course.
-                    $students = get_enrolled_users($this->request->context, 'mod/assign:submit');
-                    foreach ($students as $student) {
-                        if (!empty($student->email)) {
-                            $users[] = $student;
-                        }
-                    }
                 }
+                // For "default" group (groupid = 0), can't track any specific users.
             } else {
                 // Individual submission - add just the submitting student.
                 $student = $DB->get_record('user', ['id' => $this->request->submission->userid]);
