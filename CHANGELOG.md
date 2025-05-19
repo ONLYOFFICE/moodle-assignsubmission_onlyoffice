@@ -1,5 +1,6 @@
 # Change Log
 - refactored core logic for creating, editing, updating, and deleting submissions and assignments
+- added support for editing assignments without submissions
 
 ## 3.0.0
 ## Added

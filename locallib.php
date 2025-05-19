@@ -18,7 +18,7 @@
  * The assign_submission_onlyoffice class
  *
  * @package    assignsubmission_onlyoffice
- * @copyright  2024 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -99,6 +99,22 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         if ($this->assignment->has_instance()) {
             $contextid = $this->assignment->get_context()->id;
             $assignconfig = $this->get_config();
+            $hassubmission = $this->assignment->count_submissions_with_status(ASSIGN_SUBMISSION_STATUS_SUBMITTED);
+
+            if ($hassubmission) {
+                $hassubmissionalert = $OUTPUT->notification(
+                    get_string('hassubmissionswarning', 'assignsubmission_onlyoffice'),
+                    'warning'
+                );
+                $hassubmissionwarning = $mform->createElement(
+                    'html',
+                    $OUTPUT->render_from_template(
+                        'assignsubmission_onlyoffice/hassubmissionalert',
+                        ['alert' => $hassubmissionalert]
+                    )
+                );
+                $mform->insertElementBefore($hassubmissionwarning, 'assignsubmission_onlyoffice_format');
+            }
 
             if (property_exists($assignconfig, 'enablecomment')) {
                 $mform->getElement('assignsubmission_onlyoffice_enablecomment')
@@ -108,7 +124,10 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             if (property_exists($assignconfig, 'format')) {
                 $mform->getElement('assignsubmission_onlyoffice_format')
                     ->setSelected($assignconfig->format === 'docxf' ? 'pdf' : $assignconfig->format);
-                $mform->freeze('assignsubmission_onlyoffice_format');
+                if ($hassubmission) {
+                    $mform->freeze('assignsubmission_onlyoffice_format');
+                    $mform->hideIf('assignsubmission_onlyoffice_file', 'assignsubmission_onlyoffice_format', 'eq', 'upload');
+                }
 
                 if ($assignconfig->format === 'docxf') {
                     $mform->addElement('hidden', 'assignsubmission_onlyoffice_hidden_format', $assignconfig->format);
@@ -132,11 +151,15 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             if (property_exists($assignconfig, 'templatetype')) {
                 $mform->getElement('assignsubmission_onlyoffice_template_type')
                     ->setSelected($assignconfig->templatetype);
-                $mform->freeze('assignsubmission_onlyoffice_template_type');
+                if ($hassubmission) {
+                    $mform->freeze('assignsubmission_onlyoffice_template_type');
+                }
             }
 
-            list($origintmplkey, $contextid) = templatekey::parse_contextid($assignconfig->tmplkey);
-            $tmplkey = $origintmplkey;
+            if (property_exists($assignconfig, 'tmplkey') && $assignconfig->tmplkey) {
+                list($origintmplkey, $contextid) = templatekey::parse_contextid($assignconfig->tmplkey);
+                $tmplkey = $origintmplkey;
+            }
         } else {
             // Set pdf as default.
             $mform->getElement('assignsubmission_onlyoffice_format')->setSelected('pdf');
@@ -165,7 +188,9 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
     public function save_settings(stdClass $data) {
         global $USER;
 
-        $templatetype = $data->assignsubmission_onlyoffice_template_type;
+        $templatetype = property_exists($data, 'assignsubmission_onlyoffice_template_type')
+            ? $data->assignsubmission_onlyoffice_template_type
+            : null;
         $format = $data->assignsubmission_onlyoffice_format;
         $contextid = $this->assignment->get_context()->id;
         $tmplkey = $data->assignsubmission_onlyoffice_tmplkey;
@@ -177,30 +202,37 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $this->set_config('format', $format);
         $this->set_config('enablecomment', $data->assignsubmission_onlyoffice_enablecomment);
 
-        if (templatekey::get_contextid($tmplkey) !== $contextid) {
-            filemanager::delete_template($contextid);
-            filemanager::delete_initial($contextid);
-        }
+        if ($format === 'upload') {
+            $usercontext = \context_user::instance($USER->id);
+            $fs = get_file_storage();
+            $files = $fs->get_area_files(
+                $usercontext->id,
+                'user',
+                'draft',
+                $data->assignsubmission_onlyoffice_file,
+                'sortorder, id',
+                false
+            );
+            $file = reset($files);
+            if ($file) {
+                // Delete existing files first.
+                filemanager::delete_template($contextid);
+                filemanager::delete_initial($contextid);
 
-        if (!filemanager::get_template($contextid)) {
-            if ($format === 'upload') {
-                $usercontext = \context_user::instance($USER->id);
-                $fs = get_file_storage();
-                $files = $fs->get_area_files(
-                    $usercontext->id,
-                    'user',
-                    'draft',
-                    $data->assignsubmission_onlyoffice_file,
-                    'sortorder, id',
-                    false
-                );
-                $file = reset($files);
+                // Create new files from the uploaded file.
                 filemanager::create_template_from_uploaded_file($contextid, $file);
                 filemanager::create_initial_from_uploaded_file($contextid, $file);
-            } else {
+            }
+        } else {
+            if (templatekey::get_contextid($tmplkey) !== $contextid) {
+                filemanager::delete_template($contextid);
+                filemanager::delete_initial($contextid);
+            }
+
+            if (!filemanager::get_template($contextid)) {
                 $format = isset($data->assignsubmission_onlyoffice_hidden_format)
-                ? $data->assignsubmission_onlyoffice_hidden_format
-                : $data->assignsubmission_onlyoffice_format;
+                    ? $data->assignsubmission_onlyoffice_hidden_format
+                    : $data->assignsubmission_onlyoffice_format;
                 $this->set_config('format', $format);
 
                 $file = filemanager::create_template(

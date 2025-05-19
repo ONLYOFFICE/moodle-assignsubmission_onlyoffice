@@ -19,7 +19,7 @@
  *
  * @package     assignsubmission_onlyoffice
  * @subpackage
- * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright   2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = 'Format (ONLYOFFICE)';
@@ -29,6 +29,7 @@ $string['enablecomment'] = 'Enable student comments';
 $string['enabled_help'] = 'If enabled, students are able to use ONLYOFFICE for their submission.';
 $string['filenotfound'] = 'File not found';
 $string['formnotready'] = 'Form is not ready yet. Please wait a bit and reload the page.';
+$string['hassubmissionswarning'] = 'The file template cannot be modified once students have submitted their work.';
 $string['mentionsubject'] = 'New comment from a {$a->type}';
 $string['mentionmessage'] = '{$a->type} {$a->name} commented {$a->document}';
 $string['messageprovider:submissioncommentnotifier'] = 'ONLYOFFICE submission document comment notification';
