@@ -62,11 +62,24 @@ define([
             const selecttemplatetype = document.querySelector('select[id="id_assignsubmission_onlyoffice_template_type"]');
             const enabletoggleelement = document.querySelector('input[id="id_assignsubmission_onlyoffice_enabled"]');
             const templatekeyelement = document.querySelector("input[name='assignsubmission_onlyoffice_tmplkey']");
+
+            if (!selectformat || !selecttemplatetype) {
+                enabletoggleelement.addEventListener("change", function(e) {
+                    const hassubmissionalert = document.getElementById('assignsubmission_onlyoffice-hassubmissionalert');
+                    if (e.currentTarget.checked) {
+                        hassubmissionalert.classList.remove('hidden');
+                    } else {
+                        hassubmissionalert.classList.add('hidden');
+                    }
+                });
+                return;
+            }
+
             const originalformat = selectformat.value;
             const originaltemplatekey = templatekeyelement.value;
             const originaltemplatetype = selecttemplatetype.value;
 
-            if (enabletoggleelement.checked && selecttemplatetype.value === 'custom') {
+            if (enabletoggleelement.checked && selecttemplatetype.value === 'custom' && selectformat.value !== 'upload') {
                 openEditor(
                     contextid,
                     templatekeyelement.value,
@@ -106,6 +119,10 @@ define([
                         selecttemplatetype.value
                     );
                 } else {
+                    if (e.currentTarget.value === 'upload') {
+                        selecttemplatetype.value = 'custom';
+                        selecttemplatetype.dispatchEvent(new Event('change'));
+                    }
                     closeEditor();
                 }
             });
