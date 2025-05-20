@@ -210,6 +210,16 @@ class build_editor_config extends external_api {
 
         $config['editorConfig']['customization'] = $customization;
 
+        // Device type.
+        $devicetype = \core_useragent::get_device_type();
+        if ($devicetype == 'tablet' || $devicetype == 'mobile') {
+            $devicetype = 'mobile';
+        } else {
+            $devicetype = 'desktop';
+        }
+
+        $config['type'] = $devicetype;
+
         if (!empty($modconfig->documentserversecret)) {
             $token = jwt_wrapper::encode($config, $modconfig->documentserversecret);
             $config['token'] = $token;
