@@ -3,17 +3,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-#app-onlyoffice > iframe {
+.path-mod-assign #app-onlyoffice > iframe {
     height: 95vh;
     max-height: 60rem;
 }
 
-.assignsubmission-onlyoffice-display {
+.path-mod-assign .assignsubmission-onlyoffice-display {
     position: static !important; /* stylelint-disable-line declaration-no-important */
     max-width: unset !important; /* stylelint-disable-next-line declaration-no-important */
 }
 
-.template-type-help {
+.path-mod-assign .template-type-help {
     list-style-position: inside;
     padding: 0;
     padding-left: 10px;
