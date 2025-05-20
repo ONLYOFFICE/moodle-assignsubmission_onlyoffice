@@ -19,7 +19,7 @@
  *
  * @package    assignsubmission_onlyoffice
  * @subpackage
- * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright   2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -127,6 +127,7 @@ class filemanager {
             'filename' => static::generate_filename($name, $filenamesuffix, $ext),
             'userid' => $userid,
             'timecreated' => time(),
+            'timemodified' => time(),
         ];
 
         $newfile = $fs->create_file_from_storedfile($fr, $initial);
@@ -178,14 +179,28 @@ class filemanager {
     public static function create_template_from_uploaded_file($contextid, $file) {
         $fs = get_file_storage();
 
+        $filename = 'template.' . pathinfo($file->get_filename(), PATHINFO_EXTENSION);
+
+        $templatefiles = $fs->get_area_files(
+            $contextid,
+            self::COMPONENT_NAME,
+            self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+            0,
+        );
+
+        foreach ($templatefiles as $templatefile) {
+            $templatefile->delete();
+        }
+
         $fr = [
             'contextid' => $contextid,
             'component' => self::COMPONENT_NAME,
             'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
             'itemid' => 0,
-            'filename' => static::generate_filename('', 0, pathinfo($file->get_filename(), PATHINFO_EXTENSION)),
+            'filename' => $filename,
             'filepath' => '/',
             'userid' => $file->get_userid(),
+            'timemodified' => time(),
         ];
         return $fs->create_file_from_storedfile($fr, $file);
     }
@@ -226,12 +241,15 @@ class filemanager {
     public static function write($file, $url) {
         $fs = get_file_storage();
 
+        $filename = pathinfo($file->get_filename(), PATHINFO_FILENAME);
+        $ext = pathinfo($file->get_filename(), PATHINFO_EXTENSION);
+
         $fr = [
             'contextid' => $file->get_contextid(),
             'component' => $file->get_component(),
             'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_DRAFT,
             'itemid' => $file->get_itemid(),
-            'filename' => $file->get_filename() . '_temp',
+            'filename' => $filename . '_temp' . '.' . $ext,
             'filepath' => '/',
             'userid' => $file->get_userid(),
             'timecreated' => $file->get_timecreated(),
@@ -261,6 +279,7 @@ class filemanager {
             'filename' => $file->get_filename(),
             'filepath' => '/',
             'userid' => $file->get_userid(),
+            'timemodified' => time(),
         ];
 
         return $fs->create_file_from_storedfile($fr, $file);
@@ -277,14 +296,28 @@ class filemanager {
     public static function create_initial_from_uploaded_file($contextid, $file) {
         $fs = get_file_storage();
 
+        $filename = 'initial.' . pathinfo($file->get_filename(), PATHINFO_EXTENSION);
+
+        $initialfiles = $fs->get_area_files(
+            $contextid,
+            self::COMPONENT_NAME,
+            self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
+            0,
+        );
+
+        foreach ($initialfiles as $initialfile) {
+            $initialfile->delete();
+        }
+
         $fr = [
             'contextid' => $contextid,
             'component' => self::COMPONENT_NAME,
             'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
             'itemid' => 0,
-            'filename' => $file->get_filename(),
+            'filename' => $filename,
             'filepath' => '/',
             'userid' => $file->get_userid(),
+            'timemodified' => time(),
         ];
         return $fs->create_file_from_storedfile($fr, $file);
     }
@@ -298,8 +331,39 @@ class filemanager {
      * @return void
      */
     public static function write_to_initial_from_file($initial, $file) {
-        $initial->replace_file_with($file);
-        $initial->set_timemodified(time());
+        if ($initial->get_mimetype() !== $file->get_mimetype()) {
+            self::create_initial_from_file($file);
+            $initial->delete();
+        } else {
+            $initial->replace_file_with($file);
+            $initial->set_timemodified(time());
+        }
+    }
+
+    /**
+     * Delete file from onlyoffice assign initial area
+     *
+     * @param int $contextid context identifier.
+     *
+     * @return void
+     */
+    public static function delete_initial($contextid) {
+        $fs = get_file_storage();
+
+        $fs->delete_area_files($contextid, self::COMPONENT_NAME, self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL, 0);
+    }
+
+    /**
+     * Delete file from onlyoffice assign template area
+     *
+     * @param int $contextid context identifier.
+     *
+     * @return void
+     */
+    public static function delete_template($contextid) {
+        $fs = get_file_storage();
+
+        $fs->delete_area_files($contextid, self::COMPONENT_NAME, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, 0);
     }
 
     /**

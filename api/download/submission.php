@@ -15,18 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version and other meta-info about the plugin
+ * The assign_submission_onlyoffice callback handler for templates
  *
  * @package    assignsubmission_onlyoffice
  * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+use assignsubmission_onlyoffice\local\http\handlers\download\submission_download_handler;
+use assignsubmission_onlyoffice\local\http\requests\download\submission_download_request;
 
-$plugin->component = 'assignsubmission_onlyoffice';
-$plugin->version = 2024111300;
-$plugin->release = 'v3.0.0';
-$plugin->requires = 2022041900;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = ['mod_onlyofficeeditor' => 2024111300];
+// phpcs:ignore moodle.Files.RequireLogin.Missing
+require_once(__DIR__.'/../../../../../../config.php');
+require_once(__DIR__.'/../../../../locallib.php');
+// phpcs:enable
+
+
+try {
+    $request = new submission_download_request();
+    $handler = new submission_download_handler($request);
+    $file = $handler();
+    send_stored_file($file);
+} catch (\Exception $e) {
+    debugging($e->getMessage());
+}

@@ -19,7 +19,7 @@
  *
  * @package    assignsubmission_onlyoffice
  * @subpackage
- * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright   2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -84,5 +84,22 @@ class templatekey {
         $sql = "SELECT * FROM {assign_plugin_config} WHERE plugin = 'onlyoffice' AND name = 'tmplkey' AND value LIKE :tmplkey";
 
         return $DB->get_record_sql($sql, ['tmplkey' => $tmplkey . '%']);
+    }
+
+    /**
+     * Replace record from plugin config
+     *
+     * @param string $originalkey original template key.
+     * @param string $newkey new template key.
+     *
+     * @return mixed
+     */
+    public static function replace_record($originalkey, $newkey) {
+        global $DB;
+
+        $sql = "UPDATE {assign_plugin_config} SET value = :newkey"
+            . " WHERE plugin = 'onlyoffice' AND name = 'tmplkey' AND value LIKE :originalkey";
+
+        return $DB->execute($sql, ['newkey' => $newkey, 'originalkey' => $originalkey . '%']);
     }
 }

@@ -1,4 +1,3 @@
-<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,18 +14,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version and other meta-info about the plugin
+ * Repository to perform WS calls for assignsubmission_onlyoffice.
  *
- * @package    assignsubmission_onlyoffice
+ * @module     assignsubmission_onlyoffice/repository
  * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+import {call as fetchMany} from 'core/ajax';
 
-$plugin->component = 'assignsubmission_onlyoffice';
-$plugin->version = 2024111300;
-$plugin->release = 'v3.0.0';
-$plugin->requires = 2022041900;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = ['mod_onlyofficeeditor' => 2024111300];
+export const buildSettingsEditorConfig = (contextid, key, format, templatetype) => {
+    const args = {
+        contextid,
+        key,
+        format,
+        templatetype
+    };
+
+    return fetchMany([{methodname: 'assignsubmission_onlyoffice_build_settings_editor_config', args}])[0];
+};
+
+export const buildSubmissionEditorConfig = (contextid, submissionid, readonly, format, templatetype) => {
+    const args = {
+        contextid,
+        submissionid,
+        readonly,
+        format,
+        templatetype
+    };
+
+    return fetchMany([{methodname: 'assignsubmission_onlyoffice_build_submission_editor_config', args}])[0];
+};

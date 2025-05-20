@@ -15,19 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The assign_submission_onlyoffice generate key api actions
+ * Defines message providers (types of message sent) for the ONLYOFFICE assign submission module.
  *
  * @package    assignsubmission_onlyoffice
- * @subpackage
- * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__.'/../../../../../config.php');
-require_once(__DIR__.'/../../../locallib.php');
+defined('MOODLE_INTERNAL') || die();
 
-require_login();
-
-$key = uniqid();
-
-echo json_encode($key);
+$messageproviders = [
+    // Notify user if a comment was added to a submission file.
+    'submissioncommentnotifier' => [
+        'defaults' => [
+            'airnotifier' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
+            'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
+        ],
+    ],
+];
