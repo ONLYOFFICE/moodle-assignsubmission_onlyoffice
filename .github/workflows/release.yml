@@ -10,8 +10,8 @@ jobs:
     permissions: write-all
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: Get Info
@@ -34,7 +34,7 @@ jobs:
           cd ./newdocs
           rm -rf .git
       - name: Checkout Moodle
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: moodle/moodle
           path: ./moodle
