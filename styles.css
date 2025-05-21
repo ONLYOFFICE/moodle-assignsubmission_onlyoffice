@@ -9,8 +9,8 @@
 }
 
 .path-mod-assign .assignsubmission-onlyoffice-display {
-    /* stylelint-disable-next-line declaration-no-important */
-    max-width: unset !important;
+    position: static !important; /* stylelint-disable-line declaration-no-important */
+    max-width: unset !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .path-mod-assign .template-type-help {

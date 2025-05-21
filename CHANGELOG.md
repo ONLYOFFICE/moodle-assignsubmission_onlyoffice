@@ -2,7 +2,7 @@
 - refactored core logic for creating, editing, updating, and deleting submissions and assignments
 - added support for editing assignments without submissions
 - added support for comments on submitted files with notifications
-
+- added support for mobile device detection
 ## 3.0.0
 ## Added
 - allow users to upload files from their device
