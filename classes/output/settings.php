@@ -26,7 +26,6 @@
 namespace assignsubmission_onlyoffice\output;
 
 use core\output\named_templatable;
-use moodle_url;
 
 /**
  * Settings class for editor page template
@@ -62,10 +61,9 @@ class settings implements \renderable, named_templatable {
         ];
 
         $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
-        $src = new moodle_url(trim($documentserverurl, '/') . "/web-apps/apps/api/documents/api.js");
-        $PAGE->requires->js($src);
-
-        $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/settings', 'init', $jsparams);
+        $documentserverurl = trim($documentserverurl, '/');
+        $settingsparams = array_merge([$documentserverurl], $jsparams);
+        $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/settings', 'init', $settingsparams);
 
         return $this->data;
     }

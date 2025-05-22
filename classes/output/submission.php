@@ -25,7 +25,6 @@
 
 namespace assignsubmission_onlyoffice\output;
 
-use moodle_url;
 use core\output\named_templatable;
 
 /**
@@ -78,10 +77,9 @@ class submission implements \renderable, named_templatable {
         ];
 
         $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
-        $src = new moodle_url(trim($documentserverurl, '/') . "/web-apps/apps/api/documents/api.js");
-        $PAGE->requires->js($src);
-
-        $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/submission', 'init', $jsparams);
+        $documentserverurl = trim($documentserverurl, '/');
+        $submissionparams = array_merge([$documentserverurl], $jsparams);
+        $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/submission', 'init', $submissionparams);
 
         return $this->data;
     }
