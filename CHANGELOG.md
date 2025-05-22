@@ -1,4 +1,5 @@
 # Change Log
+- increased minimum supported Moodle version to 4.1.0
 
 ## 3.1.0
 ## Added
