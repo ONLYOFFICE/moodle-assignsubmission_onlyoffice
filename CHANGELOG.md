@@ -7,6 +7,7 @@
 - support for mobile device detection
 
 ## Changed
+- Moodle 4.0 is no longer supported
 - refactored core logic for creating, editing, updating, and deleting submissions and assignments
 
 ## 3.0.0
