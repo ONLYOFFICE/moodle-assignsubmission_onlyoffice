@@ -1,13 +1,13 @@
 # Change Log
 
-## 3.1.0
+## 4.1.0
 ## Added
 - support for editing assignments without submissions
 - support for comments on submitted files with notifications
 - support for mobile device detection
 
 ## Changed
-- Moodle 4.0 is no longer supported
+- Moodle 4.1 is no longer supported
 - refactored core logic for creating, editing, updating, and deleting submissions and assignments
 
 ## 3.0.0
