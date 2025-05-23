@@ -19,25 +19,39 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 define([
-    'core/notification',
-    'assignsubmission_onlyoffice/repository'
-], function(Notification, repository) {
+    'core/str',
+    'assignsubmission_onlyoffice/repository',
+    'assignsubmission_onlyoffice/docsapi'
+], function(Str, repository, docsapi) {
     return {
-        init: function(contextid, submissionid, readonly, format, templatetype) {
-            // eslint-disable-next-line no-undef
-            if (typeof DocsAPI === "undefined" && DocsAPI === null) {
-                Notification.error('Document Server is not defined!');
+        init: function(documentserverurl, contextid, submissionid, readonly, format, templatetype) {
+            // First ensure the DocsAPI is loaded
+            // eslint-disable-next-line promise/always-return
+            docsapi.init(documentserverurl).then(function(DocsAPI) {
+                // eslint-disable-next-line promise/no-nesting
+                repository.buildSubmissionEditorConfig(contextid, submissionid, readonly, format, templatetype).then(config => {
+                    const editorConfig = JSON.parse(config);
+                    new DocsAPI.DocEditor('onlyoffice-editor', editorConfig);
+                    return;
+                }).catch(error => {
+                    // eslint-disable-next-line no-console
+                    console.error('Error building submission editor config:', error);
+                });
+            }).catch(function() {
+                const container = document.getElementById('app-onlyoffice');
+                if (container) {
+                    // eslint-disable-next-line promise/no-nesting
+                    Str.get_string('docserverunreachable', 'onlyofficeeditor')
+                        .then(function(string) {
+                            container.innerHTML = '<div class="alert alert-danger">' + string + '</div>';
+                            return;
+                        })
+                        .catch(function(error) {
+                            // eslint-disable-next-line no-console
+                            console.error('Error getting string:', error);
+                        });
+                }
                 return;
-            }
-
-            repository.buildSubmissionEditorConfig(contextid, submissionid, readonly, format, templatetype).then(config => {
-                const editorConfig = JSON.parse(config);
-                // eslint-disable-next-line no-undef
-                new DocsAPI.DocEditor('onlyoffice-editor', editorConfig);
-                return;
-            }).catch(error => {
-                // eslint-disable-next-line no-console
-                console.error('Error building submission editor config:', error);
             });
         }
     };

@@ -19,9 +19,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 define([
-    'core/notification',
-    'assignsubmission_onlyoffice/repository'
-], function(Notification, repository) {
+    'core/str',
+    'assignsubmission_onlyoffice/repository',
+    'assignsubmission_onlyoffice/docsapi'
+], function(Str, repository, docsapi) {
     const editorId = 'onlyoffice-editor';
     let docEditor = null;
 
@@ -50,14 +51,34 @@ define([
                Math.floor(Math.random() * 1000).toString(16);
     };
 
-    return {
-        init: function(contextid) {
-            // eslint-disable-next-line no-undef
-            if (typeof DocsAPI === "undefined" && DocsAPI === null) {
-                Notification.error('Document Server is not defined!');
-                return;
-            }
+    const showDocsAPIUndefinedAlert = () => {
+        const enabletoggleelement = document.querySelector('input[id="id_assignsubmission_onlyoffice_enabled"]');
 
+        const container = document.getElementById('app-onlyoffice');
+        if (container) {
+            // eslint-disable-next-line promise/catch-or-return
+            Str.get_string('docserverunreachable', 'onlyofficeeditor').then(function(string) {
+                const visibility = enabletoggleelement.checked ? '' : 'hidden';
+                container.innerHTML = '<div id="docserverunreachablealert" class="alert alert-danger '
+                    + visibility + '">' + string + '</div>';
+                return;
+            });
+        }
+
+        if (enabletoggleelement) {
+            enabletoggleelement.addEventListener("change", function(e) {
+                const alert = document.getElementById("docserverunreachablealert");
+                if (e.currentTarget.checked && alert) {
+                    alert.classList.remove("hidden");
+                } else if (!e.currentTarget.checked && alert) {
+                    alert.classList.add("hidden");
+                }
+            });
+        }
+    };
+
+    return {
+        init: function(documentserverurl, contextid) {
             const selectformat = document.querySelector('select[id="id_assignsubmission_onlyoffice_format"]');
             const selecttemplatetype = document.querySelector('select[id="id_assignsubmission_onlyoffice_template_type"]');
             const enabletoggleelement = document.querySelector('input[id="id_assignsubmission_onlyoffice_enabled"]');
@@ -79,71 +100,77 @@ define([
             const originaltemplatekey = templatekeyelement.value;
             const originaltemplatetype = selecttemplatetype.value;
 
-            if (enabletoggleelement.checked && selecttemplatetype.value === 'custom' && selectformat.value !== 'upload') {
-                openEditor(
-                    contextid,
-                    templatekeyelement.value,
-                    selectformat.value,
-                    selecttemplatetype.value
-                );
-            }
-
-            enabletoggleelement.addEventListener('change', function(e) {
-                if (e.currentTarget.checked
-                    && selectformat.value !== 'upload'
-                    && selecttemplatetype.value === 'custom'
-                ) {
-                    if (docEditor === null) {
-                        openEditor(
-                            contextid,
-                            templatekeyelement.value,
-                            selectformat.value,
-                            selecttemplatetype.value
-                        );
-                    }
-                }
-            });
-
-            selectformat.addEventListener('change', async function(e) {
-                if (e.currentTarget.value === originalformat && selecttemplatetype.value === originaltemplatetype) {
-                    templatekeyelement.value = originaltemplatekey;
-                } else {
-                    templatekeyelement.value = generateUniqueId();
-                }
-
-                if (e.currentTarget.value !== 'upload' && selecttemplatetype.value === 'custom') {
+            docsapi.init(documentserverurl).then(function() {
+                // eslint-disable-next-line promise/always-return
+                if (enabletoggleelement.checked && selecttemplatetype.value === 'custom' && selectformat.value !== 'upload') {
                     openEditor(
                         contextid,
                         templatekeyelement.value,
                         selectformat.value,
                         selecttemplatetype.value
                     );
-                } else {
-                    if (e.currentTarget.value === 'upload') {
-                        selecttemplatetype.value = 'custom';
-                        selecttemplatetype.dispatchEvent(new Event('change'));
+                }
+
+                enabletoggleelement.addEventListener('change', function(e) {
+                    if (e.currentTarget.checked
+                        && selectformat.value !== 'upload'
+                        && selecttemplatetype.value === 'custom'
+                    ) {
+                        if (docEditor === null) {
+                            openEditor(
+                                contextid,
+                                templatekeyelement.value,
+                                selectformat.value,
+                                selecttemplatetype.value
+                            );
+                        }
                     }
-                    closeEditor();
-                }
-            });
+                });
 
-            selecttemplatetype.addEventListener('change', function(e) {
-                if (e.currentTarget.value === originalformat && selecttemplatetype.value === originaltemplatetype) {
-                    templatekeyelement.value = originaltemplatekey;
-                } else {
-                    templatekeyelement.value = generateUniqueId();
-                }
+                selectformat.addEventListener('change', async function(e) {
+                    if (e.currentTarget.value === originalformat && selecttemplatetype.value === originaltemplatetype) {
+                        templatekeyelement.value = originaltemplatekey;
+                    } else {
+                        templatekeyelement.value = generateUniqueId();
+                    }
 
-                if (e.currentTarget.value === 'custom' && selectformat.value !== 'upload') {
-                    openEditor(
-                        contextid,
-                        templatekeyelement.value,
-                        selectformat.value,
-                        e.currentTarget.value
-                    );
-                } else {
-                    closeEditor();
-                }
+                    if (e.currentTarget.value !== 'upload' && selecttemplatetype.value === 'custom') {
+                        openEditor(
+                            contextid,
+                            templatekeyelement.value,
+                            selectformat.value,
+                            selecttemplatetype.value
+                        );
+                    } else {
+                        if (e.currentTarget.value === 'upload') {
+                            selecttemplatetype.value = 'custom';
+                            selecttemplatetype.dispatchEvent(new Event('change'));
+                        }
+                        closeEditor();
+                    }
+                });
+
+                selecttemplatetype.addEventListener('change', function(e) {
+                    if (e.currentTarget.value === originalformat && selecttemplatetype.value === originaltemplatetype) {
+                        templatekeyelement.value = originaltemplatekey;
+                    } else {
+                        templatekeyelement.value = generateUniqueId();
+                    }
+
+                    if (e.currentTarget.value === 'custom' && selectformat.value !== 'upload') {
+                        openEditor(
+                            contextid,
+                            templatekeyelement.value,
+                            selectformat.value,
+                            e.currentTarget.value
+                        );
+                    } else {
+                        closeEditor();
+                    }
+                });
+            }).catch(function() {
+                showDocsAPIUndefinedAlert();
+                return;
             });
         }
     };
