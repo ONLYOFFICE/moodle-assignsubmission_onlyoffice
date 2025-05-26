@@ -23,10 +23,21 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = 'Formato (ONLYOFFICE)';
+$string['enablecomment'] = 'Abilita commenti studenti';
+$string['enablecomment:label'] = 'Feedback studenti sui file valutati';
 $string['enabled'] = 'Documento ONLYOFFICE';
 $string['enabled_help'] = 'Se abilitato, gli studenti possono usare ONLYOFFICE per la consegna';
 $string['filenotfound'] = 'File non trovato';
 $string['formnotready'] = 'Il modulo non è ancora pronto. Attendi qualche istante e ricarica la pagina.';
+$string['hassubmissionswarning'] = 'Il modello di file non può essere modificato una volta che gli studenti hanno inviato il lavoro.';
+$string['mentionmessage'] = '{$a->type} {$a->name} ha commentato {$a->document}';
+$string['mentionsubject'] = 'Nuovo commento da un {$a->type}';
+$string['messageprovider:submissioncommentnotifier'] = 'Notifica commento documento invio ONLYOFFICE';
 $string['pdfformname'] = 'Modulo';
 $string['pluginname'] = 'Documento ONLYOFFICE';
+$string['templatetype'] = 'Modello file (ONLYOFFICE)';
+$string['templatetype:custom'] = 'Personalizzato';
+$string['templatetype:empty'] = 'Vuoto';
+$string['templatetype_help'] = 'Questa impostazione determina se il file inizierà vuoto o con contenuti predefiniti. Le opzioni disponibili sono: <br/><ul class="template-type-help"><li>Vuoto: il file sarà vuoto, e gli studenti potranno modificare tutti i tipi di file (DOCX, XLSX, PPTX, PDF).</li><li>Personalizzato: puoi predefinire il contenuto del file. Gli studenti possono modificare i file DOCX, XLSX e PPTX, ma i PDF saranno disponibili solo per la compilazione, non per la modifica.</li></ul>';
 $string['viewdocument'] = 'Visualizzare il documento ONLYOFFICE';
+$string['viewdocument'] = 'Scegli file';
