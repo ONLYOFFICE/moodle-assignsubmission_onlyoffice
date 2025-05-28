@@ -4,12 +4,12 @@
  */
 
 .path-mod-assign #app-onlyoffice > iframe {
+    position: static !important; /* stylelint-disable-line declaration-no-important */
     height: 95vh;
     max-height: 60rem;
 }
 
 .path-mod-assign .assignsubmission-onlyoffice-display {
-    position: static !important; /* stylelint-disable-line declaration-no-important */
     max-width: unset !important; /* stylelint-disable-line declaration-no-important */
 }
 
