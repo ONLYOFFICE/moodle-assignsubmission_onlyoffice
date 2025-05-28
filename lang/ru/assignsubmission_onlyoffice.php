@@ -23,10 +23,21 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = 'Формат (ONLYOFFICE)';
-$string['enabled'] = 'ONLYOFFICE документ';
+$string['enablecomment'] = 'Включить комментарии студентов';
+$string['enablecomment:label'] = 'Обратная связь студентов по поводу оцененных файлов';
+$string['enabled'] = 'Документ ONLYOFFICE';
 $string['enabled_help'] = 'Если активно, студенты могут использовать ONLYOFFFICE для отправки.';
 $string['filenotfound'] = 'Файл не найден';
 $string['formnotready'] = 'Форма еще не готова. Пожалуйста, немного подождите и перезагрузите страницу.';
+$string['hassubmissionswarning'] = 'Шаблон файла не может быть изменен после того, как студенты отправили свою работу.';
+$string['mentionmessage'] = '{$a->type} {$a->name} прокомментировал {$a->document}';
+$string['mentionsubject'] = 'Новый комментарий от {$a->type}';
+$string['messageprovider:submissioncommentnotifier'] = 'Уведомление о комментариях к документу, отправленному в ONLYOFFICE';
 $string['pdfformname'] = 'Форма';
-$string['pluginname'] = 'ONLYOFFICE документ';
-$string['viewdocument'] = 'Просмотреть ONLYOFFICE документ';
+$string['pluginname'] = 'Документ ONLYOFFICE';
+$string['templatetype'] = 'Шаблон файла (ONLYOFFICE)';
+$string['templatetype:custom'] = 'Пользовательский';
+$string['templatetype:empty'] = 'Пустой';
+$string['templatetype_help'] = 'Эта настройка определяет, будет ли файл изначально пустым или с определенным содержимым. Доступны следующие параметры: <br/><ul class="template-type-help"><li>Пустой: файл будет пустым, и студенты смогут редактировать все типы файлов (DOCX, XLSX, PPTX, PDF).</li><li>Пользовательский: вы можете заранее определить содержимое файла. Учащиеся смогут редактировать файлы DOCX, XLSX и PPTX, но файлы PDF будут доступны только для заполнения, а не для редактирования.</li></ul>';
+$string['viewdocument'] = 'Просмотреть документ ONLYOFFICE';
+$string['viewdocument'] = 'Выбрать файл';

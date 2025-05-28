@@ -133,11 +133,6 @@ class submission_callback_handler extends callback_handler {
         $userfullname = fullname($this->request->callbackuser);
         $document = $this->request->cm->name;
         $messagesubject = get_string('mentionsubject', 'assignsubmission_onlyoffice', ['type' => $usertype]);
-        $messagebody = get_string(
-            'mentionmessage',
-            'assignsubmission_onlyoffice',
-            ['type' => ucfirst($usertype), 'name' => $userfullname, 'document' => $document]
-        );
 
         $message = new message();
         $message->component = 'assignsubmission_onlyoffice';
@@ -145,9 +140,9 @@ class submission_callback_handler extends callback_handler {
         $message->userfrom = core_user::get_noreply_user();
         $message->userto = $recipient;
         $message->subject = $messagesubject;
-        $message->fullmessage = $messagebody;
+        $message->fullmessage = self::format_notification_message_text($url, $usertype, $userfullname, $document);
         $message->fullmessageformat = FORMAT_PLAIN;
-        $message->fullmessagehtml = null;
+        $message->fullmessagehtml = self::format_notification_message_html($url, $usertype, $userfullname, $document);
         $message->notification = 1;
         $message->contexturl = $url;
         $message->contexturlname = $document;
@@ -206,5 +201,47 @@ class submission_callback_handler extends callback_handler {
         $users = array_values($users);
 
         return $users;
+    }
+
+    /**
+     * Format notification message text
+     *
+     * @param string $usertype
+     * @param string $userfullname
+     * @param string $document
+     * @return string
+     */
+    private static function format_notification_message_text($usertype, $userfullname, $document) {
+        $messagebody = get_string(
+            'mentionmessage',
+            'assignsubmission_onlyoffice',
+            ['type' => ucfirst($usertype), 'name' => $userfullname, 'document' => $document]
+        );
+
+        $text  = $messagebody;
+        return $text;
+    }
+
+    /**
+     * Format notification message html
+     *
+     * @param string $url
+     * @param string $usertype
+     * @param string $userfullname
+     * @param string $document
+     * @return string
+     */
+    private static function format_notification_message_html($url, $usertype, $userfullname, $document) {
+        $messagebody = get_string(
+            'mentionmessage',
+            'assignsubmission_onlyoffice',
+            ['type' => ucfirst($usertype), 'name' => $userfullname, 'document' => $document]
+        );
+
+        $html  = '<p>' . $messagebody . '</p>';
+        $html .= '<p>' . '<a href="' . $url . '">' .
+                    get_string('mentionmessage:gotofile', 'assignsubmission_onlyoffice') .
+                '</a>' . '</p>';
+        return $html;
     }
 }
