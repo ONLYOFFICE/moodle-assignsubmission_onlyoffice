@@ -224,13 +224,7 @@ class submission_callback_handler extends callback_handler {
      * @param string $userfullname
      * @return string
      */
-    private static function format_notification_message_text(
-        $course,
-        $coursemodule,
-        $url,
-        $usertype,
-        $userfullname,
-    ) {
+    private static function format_notification_message_text($course, $coursemodule, $url, $usertype, $userfullname) {
         $messagebody = get_string(
             'mentionmessage',
             'assignsubmission_onlyoffice',
@@ -260,13 +254,7 @@ class submission_callback_handler extends callback_handler {
      * @param string $userfullname
      * @return string
      */
-    private static function format_notification_message_html(
-        $course,
-        $coursemodule,
-        $url,
-        $usertype,
-        $userfullname,
-    ) {
+    private static function format_notification_message_html($course, $coursemodule, $url, $usertype, $userfullname) {
         global $CFG;
 
         $html = '<p>' .
