@@ -142,7 +142,7 @@ class submission_callback_handler extends callback_handler {
         $message->fullmessage = self::format_notification_message_text(
             $this->request->course,
             $this->request->cm,
-            $url,
+            $url->out(),
             $usertype,
             $userfullname,
         );
@@ -150,7 +150,7 @@ class submission_callback_handler extends callback_handler {
         $message->fullmessagehtml = self::format_notification_message_html(
                 $this->request->course,
                 $this->request->cm,
-                $url,
+                $url->out(),
                 $usertype,
                 $userfullname,
             );
