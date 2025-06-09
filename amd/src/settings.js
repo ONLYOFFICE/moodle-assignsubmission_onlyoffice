@@ -124,6 +124,8 @@ define([
                                 selecttemplatetype.value
                             );
                         }
+                    } else {
+                        closeEditor();
                     }
                 });
 
