@@ -131,7 +131,6 @@ class submission_callback_handler extends callback_handler {
             ? 'teacher'
             : 'student';
         $userfullname = fullname($this->request->callbackuser);
-        $document = $this->request->cm->name;
         $messagesubject = get_string('mentionsubject', 'assignsubmission_onlyoffice', ['type' => $usertype]);
 
         $message = new message();
@@ -140,12 +139,24 @@ class submission_callback_handler extends callback_handler {
         $message->userfrom = core_user::get_noreply_user();
         $message->userto = $recipient;
         $message->subject = $messagesubject;
-        $message->fullmessage = self::format_notification_message_text($url, $usertype, $userfullname, $document);
+        $message->fullmessage = self::format_notification_message_text(
+            $this->request->course,
+            $this->request->cm,
+            $url,
+            $usertype,
+            $userfullname,
+        );
         $message->fullmessageformat = FORMAT_PLAIN;
-        $message->fullmessagehtml = self::format_notification_message_html($url, $usertype, $userfullname, $document);
+        $message->fullmessagehtml = self::format_notification_message_html(
+                $this->request->course,
+                $this->request->cm,
+                $url,
+                $usertype,
+                $userfullname,
+            );
         $message->notification = 1;
         $message->contexturl = $url;
-        $message->contexturlname = $document;
+        $message->contexturlname = $this->request->cm->name;
         message_send($message);
     }
 
@@ -206,42 +217,80 @@ class submission_callback_handler extends callback_handler {
     /**
      * Format notification message text
      *
+     * @param \stdClass $course
+     * @param \stdClass $coursemodule
+     * @param string $url
      * @param string $usertype
      * @param string $userfullname
-     * @param string $document
      * @return string
      */
-    private static function format_notification_message_text($usertype, $userfullname, $document) {
+    private static function format_notification_message_text(
+        $course,
+        $coursemodule,
+        $url,
+        $usertype,
+        $userfullname,
+    ) {
         $messagebody = get_string(
             'mentionmessage',
             'assignsubmission_onlyoffice',
-            ['type' => ucfirst($usertype), 'name' => $userfullname, 'document' => $document]
+            ['type' => ucfirst($usertype), 'name' => $userfullname, 'document' => $coursemodule->name]
         );
 
-        $text  = $messagebody;
+        $text  = $course->shortname .
+                     ' -> ' .
+                     get_string('modulename', 'assign') .
+                     ' -> ' .
+                     $coursemodule->name . "\n";
+        $text .= '---------------------------------------------------------------------' . "\n";
+        $text .= $messagebody . "\n";
+        $text .= get_string('mentionmessage:gotofile', 'assignsubmission_onlyoffice', ['url' => $url]) . "\n";
+        $text .= "\n---------------------------------------------------------------------\n";
+
         return $text;
     }
 
     /**
      * Format notification message html
      *
+     * @param \stdClass $course
+     * @param \stdClass $coursemodule
      * @param string $url
      * @param string $usertype
      * @param string $userfullname
-     * @param string $document
      * @return string
      */
-    private static function format_notification_message_html($url, $usertype, $userfullname, $document) {
+    private static function format_notification_message_html(
+        $course,
+        $coursemodule,
+        $url,
+        $usertype,
+        $userfullname,
+    ) {
+        global $CFG;
+
+        $html = '<p>' .
+                '<a href="' . $CFG->wwwroot . '/course/view.php?id=' . $course->id . '">' .
+                $course->shortname .
+                '</a> ->' .
+                '<a href="' . $CFG->wwwroot . '/mod/assign/index.php?id=' . $course->id . '">' .
+                get_string('modulename', 'assign') .
+                '</a> ->' .
+                '<a href="' . $CFG->wwwroot . '/mod/assign/view.php?id=' . $coursemodule->id . '">' .
+                $coursemodule->name .
+                '</a></p>';
+
         $messagebody = get_string(
             'mentionmessage',
             'assignsubmission_onlyoffice',
-            ['type' => ucfirst($usertype), 'name' => $userfullname, 'document' => $document]
+            ['type' => ucfirst($usertype), 'name' => $userfullname, 'document' => $coursemodule->name]
         );
 
-        $html  = '<p>' . $messagebody . '</p>';
-        $html .= '<p>' . '<a href="' . $url . '">' .
-                    get_string('mentionmessage:gotofile', 'assignsubmission_onlyoffice') .
-                '</a>' . '</p>';
+        $html .= '<hr/><p>' . $messagebody . '</p>';
+        $html .= '<p>' .
+                 get_string('mentionmessage:gotofile', 'assignsubmission_onlyoffice', ['url' => $url]) .
+                 '</p><hr/>';
+
         return $html;
     }
 }
