@@ -30,8 +30,8 @@ $string['enabled_help'] = 'If enabled, students are able to use ONLYOFFICE for t
 $string['filenotfound'] = 'File not found';
 $string['formnotready'] = 'Form is not ready yet. Please wait a bit and reload the page.';
 $string['hassubmissionswarning'] = 'The file template cannot be modified once students have submitted their work.';
-$string['mentionmessage'] = '{$a->type} <b>{$a->name}</b> commented <b>{$a->document}</b>. To check out, open the file.';
-$string['mentionmessage:gotofile'] = 'Go to: file';
+$string['mentionmessage'] = '{$a->type} <b>{$a->name}</b> commented on the file in the assignment <b>{$a->document}</b>.';
+$string['mentionmessage:gotofile'] = 'Proceed to the <a href="{$a->url}">assignment submission</a> to check the comment(s).';
 $string['mentionsubject'] = 'New comment from a {$a->type}';
 $string['messageprovider:submissioncommentnotifier'] = 'ONLYOFFICE submission document comment notification';
 $string['pdfformname'] = 'Form';
