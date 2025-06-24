@@ -40,8 +40,8 @@ $string['messageprovider:submissioncommentnotifier'] = 'ONLYOFFICE submission do
 $string['pdfformname'] = 'Form';
 $string['pluginname'] = 'ONLYOFFICE document';
 $string['templatetype'] = 'File template (ONLYOFFICE)';
-$string['templatetype:custom'] = 'Custom';
-$string['templatetype:empty'] = 'Empty';
-$string['templatetype_help'] = 'This setting determines whether the file will start empty or with predefined content. The available options are: <br/><ul class="template-type-help"><li>Empty: The file will be blank, and students can edit all file types (DOCX, XLSX, PPTX, PDF).</li><li>Custom: You can predefine the file content. Students can edit DOCX, XLSX, and PPTX files, but PDF files will only be available for filling out, not for editing.</li></ul>';
+$string['templatetype:custom'] = 'Edit default template';
+$string['templatetype:empty'] = 'Start with empty document';
+$string['templatetype_help'] = 'You can choose what the starting file for students will be:: <br/><ul class="template-type-help"><li>Start with empty document - students will start with a blank file (DOCX, XLSX, PPTX, PDF) and will be able to edit it.</li><li>Edit default template - you can prepare the file on this page, and students will use your template. They can edit DOCX, XLSX, and PPTX files, while PDFs will only be fillable and not editable.</li></ul>';
 $string['uploadfile'] = 'Choose file';
 $string['viewdocument'] = 'View ONLYOFFICE document';
