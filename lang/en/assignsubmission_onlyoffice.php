@@ -26,7 +26,9 @@ $string['assignformat'] = 'Format (ONLYOFFICE)';
 $string['enablecomment'] = 'Enable student comments';
 $string['enablecomment:label'] = 'Students feedback on graded files';
 $string['enabled'] = 'ONLYOFFICE document';
-$string['enabled_help'] = 'If enabled, students are able to use ONLYOFFICE for their submission.';
+$string['enabled_help'] = 'If enabled, students can submit ONLYOFFICE documents directly in the browser. You can set the format of the submitted file or create a template for students.
+
+For more information, visit <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">Help Center</a>.';
 $string['filenotfound'] = 'File not found';
 $string['formnotready'] = 'Form is not ready yet. Please wait a bit and reload the page.';
 $string['hassubmissionswarning'] = 'The file template cannot be modified once students have submitted their work.';
