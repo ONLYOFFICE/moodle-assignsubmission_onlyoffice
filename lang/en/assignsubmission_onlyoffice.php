@@ -23,8 +23,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = 'Format (ONLYOFFICE)';
-$string['enablecomment'] = 'Enable student comments';
-$string['enablecomment:label'] = 'Students feedback on graded files';
+$string['enablecomment'] = 'Allow students to comment inside the document after grading';
+$string['enablecomment_help'] = 'If enabled, students will be able to leave comments directly inside the ONLYOFFICE document after you have graded their submission.';
+$string['enablecomment:label'] = 'Student comments on graded ONLYOFFICE documents';
 $string['enabled'] = 'ONLYOFFICE document';
 $string['enabled_help'] = 'If enabled, students can submit ONLYOFFICE documents directly in the browser. You can set the format of the submitted file or create a template for students.
 
