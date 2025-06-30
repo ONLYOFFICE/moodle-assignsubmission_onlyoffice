@@ -23,10 +23,13 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = 'Format (ONLYOFFICE)';
-$string['enablecomment'] = 'Enable student comments';
-$string['enablecomment:label'] = 'Students feedback on graded files';
+$string['enablecomment'] = 'Allow students to comment inside the document after grading';
+$string['enablecomment_help'] = 'If enabled, students will be able to leave comments directly inside the ONLYOFFICE document after you have graded their submission.';
+$string['enablecomment:label'] = 'Student comments on graded ONLYOFFICE documents';
 $string['enabled'] = 'ONLYOFFICE document';
-$string['enabled_help'] = 'If enabled, students are able to use ONLYOFFICE for their submission.';
+$string['enabled_help'] = 'If enabled, students can submit ONLYOFFICE documents directly in the browser. You can set the format of the submitted file or create a template for students.
+
+For more information, visit <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">Help Center</a>.';
 $string['filenotfound'] = 'File not found';
 $string['formnotready'] = 'Form is not ready yet. Please wait a bit and reload the page.';
 $string['hassubmissionswarning'] = 'The file template cannot be modified once students have submitted their work.';
@@ -37,8 +40,8 @@ $string['messageprovider:submissioncommentnotifier'] = 'ONLYOFFICE submission do
 $string['pdfformname'] = 'Form';
 $string['pluginname'] = 'ONLYOFFICE document';
 $string['templatetype'] = 'File template (ONLYOFFICE)';
-$string['templatetype:custom'] = 'Custom';
-$string['templatetype:empty'] = 'Empty';
-$string['templatetype_help'] = 'This setting determines whether the file will start empty or with predefined content. The available options are: <br/><ul class="template-type-help"><li>Empty: The file will be blank, and students can edit all file types (DOCX, XLSX, PPTX, PDF).</li><li>Custom: You can predefine the file content. Students can edit DOCX, XLSX, and PPTX files, but PDF files will only be available for filling out, not for editing.</li></ul>';
-$string['uploadfile'] = 'Choose file';
+$string['templatetype:custom'] = 'Edit default template';
+$string['templatetype:empty'] = 'Start with empty document';
+$string['templatetype_help'] = 'You can choose what the starting file for students will be:: <br/><ul class="template-type-help"><li>Start with empty document - students will start with a blank file (DOCX, XLSX, PPTX, PDF) and will be able to edit it.</li><li>Edit default template - you can prepare the file on this page, and students will use your template. They can edit DOCX, XLSX, and PPTX files, while PDFs will only be fillable and not editable.</li></ul>';
+$string['uploadfile'] = 'Upload file';
 $string['viewdocument'] = 'View ONLYOFFICE document';

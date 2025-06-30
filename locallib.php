@@ -95,6 +95,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             get_string('enablecomment:label', 'assignsubmission_onlyoffice'),
             get_string('enablecomment', 'assignsubmission_onlyoffice')
         );
+        $mform->addHelpButton('assignsubmission_onlyoffice_enablecomment', 'enablecomment', 'assignsubmission_onlyoffice');
 
         if ($this->assignment->has_instance()) {
             $contextid = $this->assignment->get_context()->id;
