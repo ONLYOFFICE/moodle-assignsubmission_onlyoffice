@@ -40,5 +40,5 @@ $string['templatetype'] = 'Шаблон файла (ONLYOFFICE)';
 $string['templatetype:custom'] = 'Пользовательский';
 $string['templatetype:empty'] = 'Пустой';
 $string['templatetype_help'] = 'Эта настройка определяет, будет ли файл изначально пустым или с определенным содержимым. Доступны следующие параметры: <br/><ul class="template-type-help"><li>Пустой: файл будет пустым, и студенты смогут редактировать все типы файлов (DOCX, XLSX, PPTX, PDF).</li><li>Пользовательский: вы можете заранее определить содержимое файла. Учащиеся смогут редактировать файлы DOCX, XLSX и PPTX, но файлы PDF будут доступны только для заполнения, а не для редактирования.</li></ul>';
+$string['uploadfile'] = 'Выбрать файл';
 $string['viewdocument'] = 'Просмотреть документ ONLYOFFICE';
-$string['viewdocument'] = 'Выбрать файл';

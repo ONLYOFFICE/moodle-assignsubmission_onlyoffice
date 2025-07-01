@@ -40,5 +40,5 @@ $string['templatetype'] = 'Dateivorlage (ONLYOFFICE)';
 $string['templatetype:custom'] = 'Benutzerdefiniert';
 $string['templatetype:empty'] = 'Leer';
 $string['templatetype_help'] = 'Diese Einstellung bestimmt, ob die Datei leer oder mit vordefiniertem Inhalt beginnt. Die verfügbaren Optionen sind: <br/><ul class="template-type-help"><li>Leer: Die Datei ist leer und Studierende können alle Dateitypen (DOCX, XLSX, PPTX, PDF) bearbeiten.</li><li>Benutzerdefiniert: Sie können den Dateiinhalt vordefinieren. Studierende können DOCX-, XLSX- und PPTX-Dateien bearbeiten, PDF-Dateien stehen jedoch nur zum Ausfüllen, nicht zum Bearbeiten zur Verfügung.</li></ul>';
+$string['uploadfile'] = 'Datei auswählen';
 $string['viewdocument'] = 'ONLYOFFICE-Dokument anzeigen';
-$string['viewdocument'] = 'Datei auswählen';
