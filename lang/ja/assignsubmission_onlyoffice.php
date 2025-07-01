@@ -40,5 +40,4 @@ $string['templatetype'] = 'ファイルテンプレート（ONLYOFFICE）';
 $string['templatetype:custom'] = 'カスタム';
 $string['templatetype:empty'] = '空白';
 $string['templatetype_help'] = 'この設定は、ファイルが空の状態から開始するか、またはあらかじめ定義された内容から開始するかを決定します。利用可能なオプションは次のとおりです。<br/><ul class="template-type-help"><li>空： ファイルは空白で、学生はすべてのファイルタイプ （DOCX、XLSX、PPTX、PDF） を編集できます。</li><li>カスタム： ファイルの内容を事前に定義できます。学生は DOCX、XLSX、および PPTX ファイルを編集できますが、PDF ファイルは記入のみ可能で、編集はできません。</li></ul>';
-$string['uploadfile'] = 'ファイルの選択';
 $string['viewdocument'] = 'ONLYOFFICE文書を見る';

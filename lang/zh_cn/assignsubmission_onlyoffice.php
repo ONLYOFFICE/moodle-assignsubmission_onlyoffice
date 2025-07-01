@@ -40,5 +40,4 @@ $string['templatetype'] = '文件模板 (ONLYOFFICE)';
 $string['templatetype:custom'] = '自定义';
 $string['templatetype:empty'] = '空';
 $string['templatetype_help'] = '此设置决定文件初始为空还是包含预定义内容。可用选项包括：<br/><ul class="template-type-help"><li>空：文件为空白，学生可以编辑所有文件类型（DOCX、XLSX、PPTX、PDF）。</li><li>自定义：您可以预定义文件内容。学生可以编辑 DOCX、XLSX 和 PPTX 文件，但 PDF 文件仅可供填写，不可编辑。</li></ul>';
-$string['uploadfile'] = '选择文件';
 $string['viewdocument'] = '查看 ONLYOFFICE 文档';

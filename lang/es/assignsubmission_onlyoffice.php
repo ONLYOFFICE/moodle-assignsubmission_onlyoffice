@@ -40,5 +40,4 @@ $string['templatetype'] = 'Plantilla de archivo (ONLYOFFICE)';
 $string['templatetype:custom'] = 'Personalizado';
 $string['templatetype:empty'] = 'Vacío';
 $string['templatetype_help'] = 'Este ajuste determina si el archivo se iniciará vacío o con contenido predefinido. Las opciones disponibles son: <br/><ul class="template-type-help"><li>Vacío: El archivo estará en blanco, y los estudiantes pueden editar todos los tipos de archivo (DOCX, XLSX, PPTX, PDF).</li><li>Personalizado: Puede predefinir el contenido del archivo. Los estudiantes pueden editar archivos DOCX, XLSX y PPTX, pero los archivos PDF solo estarán disponibles para su rellenado, no para su edición.</li></u>';
-$string['uploadfile'] = 'Elegir archivo';
 $string['viewdocument'] = 'Ver documento de ONLYOFFICE';

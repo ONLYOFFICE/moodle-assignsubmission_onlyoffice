@@ -40,5 +40,4 @@ $string['templatetype'] = 'Modèle de fichier (ONLYOFFICE)';
 $string['templatetype:custom'] = 'Personnalisé';
 $string['templatetype:empty'] = 'Vide';
 $string['templatetype_help'] = 'Ce paramètre détermine si le fichier démarre vide ou avec un contenu prédéfini. Les options disponibles sont : <br/><ul class="template-type-help"><li>Vide : Le fichier sera vide et les étudiants pourront modifier tous les types de fichiers (DOCX, XLSX, PPTX, PDF).</li><li>Personnalisé : Vous pouvez prédéfinir le contenu du fichier. Les étudiants peuvent modifier les fichiers DOCX, XLSX et PPTX, mais les fichiers PDF ne seront disponibles que pour être remplis, et non pour être modifiés.</li></ul>';
-$string['uploadfile'] = 'Choisissez le fichier';
 $string['viewdocument'] = 'Voir le document ONLYOFFICE';
