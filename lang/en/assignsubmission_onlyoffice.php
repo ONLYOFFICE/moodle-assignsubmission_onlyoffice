@@ -24,8 +24,8 @@
  */
 $string['assignformat'] = 'Format (ONLYOFFICE)';
 $string['enablecomment'] = 'Allow students to comment inside the document after grading';
-$string['enablecomment_help'] = 'If enabled, students will be able to leave comments directly inside the ONLYOFFICE document after you have graded their submission.';
 $string['enablecomment:label'] = 'Student comments on graded ONLYOFFICE documents';
+$string['enablecomment_help'] = 'If enabled, students will be able to leave comments directly inside the ONLYOFFICE document after you have graded their submission.';
 $string['enabled'] = 'ONLYOFFICE document';
 $string['enabled_help'] = 'If enabled, students can submit ONLYOFFICE documents directly in the browser. You can set the format of the submitted file or create a template for students.
 
