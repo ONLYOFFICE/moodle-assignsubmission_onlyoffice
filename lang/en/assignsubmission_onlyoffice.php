@@ -42,6 +42,6 @@ $string['pluginname'] = 'ONLYOFFICE document';
 $string['templatetype'] = 'File template (ONLYOFFICE)';
 $string['templatetype:custom'] = 'Edit default template';
 $string['templatetype:empty'] = 'Start with empty document';
-$string['templatetype_help'] = 'You can choose what the starting file for students will be:: <br/><ul class="template-type-help"><li>Start with empty document - students will start with a blank file (DOCX, XLSX, PPTX, PDF) and will be able to edit it.</li><li>Edit default template - you can prepare the file on this page, and students will use your template. They can edit DOCX, XLSX, and PPTX files, while PDFs will only be fillable and not editable.</li></ul>';
+$string['templatetype_help'] = 'You can choose what the starting file for students will be: <br/><ul class="template-type-help"><li>Start with empty document - students will start with a blank file (DOCX, XLSX, PPTX, PDF) and will be able to edit it.</li><li>Edit default template - you can prepare the file on this page, and students will use your template. They can edit DOCX, XLSX, and PPTX files, while PDFs will only be fillable and not editable.</li></ul>';
 $string['uploadfile'] = 'Upload file';
 $string['viewdocument'] = 'View ONLYOFFICE document';
