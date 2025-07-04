@@ -23,24 +23,25 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = 'Format (ONLYOFFICE)';
-$string['enablecomment'] = 'Kommentare von Studierenden aktivieren';
+$string['enablecomment'] = 'Den Studierenden erlauben, nach der Benotung im Dokument Kommentare abzugeben';
 $string['enablecomment:label'] = 'Feedback der Studierenden zu den bewerteten Dateien';
-$string['enablecomment_help'] = 'Если эта функция включена, учащиеся смогут оставлять комментарии непосредственно в документе ONLYOFFICE после того, как вы оцените их работу.';
+$string['enablecomment_help'] = 'Falls aktiviert, können Studierende Kommentare direkt im ONLYOFFICE-Dokument hinterlassen, nachdem Sie ihre Einreichung bewertet haben.';
 $string['enabled'] = 'ONLYOFFICE-Dokument';
-$string['enabled_help'] = 'Если эта функция включена, студенты могут отправлять документы ONLYOFFICE прямо в браузере. Вы можете задать формат отправляемого файла или создать шаблон для студентов.
+$string['enabled_help'] = 'Falls aktiviert, können Studierende ONLYOFFICE-Dokumente direkt im Browser einreichen. Sie können das Format der eingereichten Datei festlegen oder eine Vorlage für Studierende erstellen.
 
-For more information, visit <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">Help Center</a>.';
+Weitere Informationen finden Sie im <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">Hilfe-Center</a>.';
 $string['filenotfound'] = 'Datei nicht gefunden';
 $string['formnotready'] = 'Das Formular ist noch nicht fertig. Bitte warten Sie ein wenig und laden Sie die Seite neu.';
 $string['hassubmissionswarning'] = 'Die Dateivorlage kann nicht mehr geändert werden, nachdem die Studierenden ihre Arbeit eingereicht haben.';
 $string['mentionmessage'] = '{$a->type} <b>{$a->name}</b> kommentierte <b>{$a->document}</b>. Öffnen Sie die Datei, um auszuchecken.';
-$string['mentionmessage:gotofile'] = 'Перейдите к <a href="{$a->url}">отправке задания</a>, чтобы проверить комментарии';
+$string['mentionmessage:gotofile'] = 'Öffnen Sie die <a href="{$a->url}">eingereichte Aufgabe</a>, um Kommentar(e) zu überprüfen';
 $string['mentionsubject'] = 'Neuer Kommentar von {$a->type}';
 $string['messageprovider:submissioncommentnotifier'] = 'Benachrichtigung über den Kommentar zum eingereichten ONLYOFFICE-Dokument';
 $string['pdfformname'] = 'Formular';
 $string['pluginname'] = 'ONLYOFFICE-Dokument';
 $string['templatetype'] = 'Dateivorlage (ONLYOFFICE)';
-$string['templatetype:custom'] = 'Изменить шаблон по умолчанию';
-$string['templatetype:empty'] = 'Начать с пустого документа';
+$string['templatetype:custom'] = 'Standardvorlage bearbeite';
+$string['templatetype:empty'] = 'Mit einem leeren Dokument beginnen';
 $string['templatetype_help'] = 'Diese Einstellung bestimmt, ob die Datei leer oder mit vordefiniertem Inhalt beginnt. Die verfügbaren Optionen sind: <br/><ul class="template-type-help"><li>Leer: Die Datei ist leer und Studierende können alle Dateitypen (DOCX, XLSX, PPTX, PDF) bearbeiten.</li><li>Benutzerdefiniert: Sie können den Dateiinhalt vordefinieren. Studierende können DOCX-, XLSX- und PPTX-Dateien bearbeiten, PDF-Dateien stehen jedoch nur zum Ausfüllen, nicht zum Bearbeiten zur Verfügung.</li></ul>';
+$string['uploadfile'] = 'Datei hochladen';
 $string['viewdocument'] = 'ONLYOFFICE-Dokument anzeigen';

@@ -23,13 +23,13 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = 'Формат (ONLYOFFICE)';
-$string['enablecomment'] = 'Включить комментарии студентов';
+$string['enablecomment'] = 'Разрешить студентам оставлять комментарии внутри документа после оценки';
 $string['enablecomment:label'] = 'Обратная связь студентов по поводу оцененных файлов';
-$string['enablecomment_help'] = 'Если эта функция включена, учащиеся смогут оставлять комментарии непосредственно в документе ONLYOFFICE после того, как вы оцените их работу.';
+$string['enablecomment_help'] = 'Если эта функция включена, студенты могут оставлять комментарии непосредственно в документе ONLYOFFICE после того, как вы оцените их работу.';
 $string['enabled'] = 'Документ ONLYOFFICE';
 $string['enabled_help'] = 'Если эта функция включена, студенты могут отправлять документы ONLYOFFICE прямо в браузере. Вы можете задать формат отправляемого файла или создать шаблон для студентов.
 
-For more information, visit <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">Help Center</a>.';
+Чтобы узнать больше, перейдите в <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">Справочный центр</a>.';
 $string['filenotfound'] = 'Файл не найден';
 $string['formnotready'] = 'Форма еще не готова. Пожалуйста, немного подождите и перезагрузите страницу.';
 $string['hassubmissionswarning'] = 'Шаблон файла не может быть изменен после того, как студенты отправили свою работу.';
@@ -42,6 +42,6 @@ $string['pluginname'] = 'Документ ONLYOFFICE';
 $string['templatetype'] = 'Шаблон файла (ONLYOFFICE)';
 $string['templatetype:custom'] = 'Изменить шаблон по умолчанию';
 $string['templatetype:empty'] = 'Начать с пустого документа';
-$string['templatetype_help'] = 'Эта настройка определяет, будет ли файл изначально пустым или с определенным содержимым. Доступны следующие параметры: <br/><ul class="template-type-help"><li>Пустой: файл будет пустым, и студенты смогут редактировать все типы файлов (DOCX, XLSX, PPTX, PDF).</li><li>Пользовательский: вы можете заранее определить содержимое файла. Учащиеся смогут редактировать файлы DOCX, XLSX и PPTX, но файлы PDF будут доступны только для заполнения, а не для редактирования.</li></ul>';
+$string['templatetype_help'] = 'Эта настройка определяет, будет ли файл изначально пустым или с определенным содержимым. Доступны следующие параметры: <br/><ul class="template-type-help"><li>Пустой: файл будет пустым, и студенты смогут редактировать все типы файлов (DOCX, XLSX, PPTX, PDF).</li><li>Пользовательский: вы можете заранее определить содержимое файла. Студенты смогут редактировать файлы DOCX, XLSX и PPTX, но файлы PDF будут доступны только для заполнения, а не для редактирования.</li></ul>';
 $string['uploadfile'] = 'Загрузить файл';
 $string['viewdocument'] = 'Просмотреть документ ONLYOFFICE';
