@@ -24,12 +24,12 @@
  */
 $string['assignformat'] = 'Format (ONLYOFFICE)';
 $string['enablecomment'] = 'Autoriser les commentaires des étudiants';
-$string['enablecomment:label'] = 'Retour des étudiants sur les fichiers notés';
-$string['enablecomment_help'] = 'Если эта функция включена, учащиеся смогут оставлять комментарии непосредственно в документе ONLYOFFICE после того, как вы оцените их работу.';
+$string['enablecomment:label'] = 'Retour des étudiants sur les fichiers ONLYOFFICE notés';
+$string['enablecomment_help'] = 'Si cette option est activée, les étudiants pourront laisser des commentaires directement à l\'intérieur du document ONLYOFFICE après que vous ayez noté leur travail.';
 $string['enabled'] = 'Document ONLYOFFICE';
 $string['enabled_help'] = 'Если эта функция включена, студенты могут отправлять документы ONLYOFFICE прямо в браузере. Вы можете задать формат отправляемого файла или создать шаблон для студентов.
 
-For more information, visit <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">Help Center</a>.';
+Pour plus d\'informations, visitez le <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">Centre d\'aide</a>.';
 $string['filenotfound'] = 'Fichier introuvable';
 $string['formnotready'] = 'Le formulaire n\'est pas encore prêt. Veuillez patienter un instant et recharger la page.';
 $string['hassubmissionswarning'] = 'Le modèle de fichier ne peut pas être modifié une fois que les étudiants ont soumis leur travail.';
@@ -43,4 +43,5 @@ $string['templatetype'] = 'Modèle de fichier (ONLYOFFICE)';
 $string['templatetype:custom'] = 'Изменить шаблон по умолчанию';
 $string['templatetype:empty'] = 'Начать с пустого документа';
 $string['templatetype_help'] = 'Ce paramètre détermine si le fichier démarre vide ou avec un contenu prédéfini. Les options disponibles sont : <br/><ul class="template-type-help"><li>Vide : Le fichier sera vide et les étudiants pourront modifier tous les types de fichiers (DOCX, XLSX, PPTX, PDF).</li><li>Personnalisé : Vous pouvez prédéfinir le contenu du fichier. Les étudiants peuvent modifier les fichiers DOCX, XLSX et PPTX, mais les fichiers PDF ne seront disponibles que pour être remplis, et non pour être modifiés.</li></ul>';
+$string['uploadfile'] = 'Envoyer un fichier';
 $string['viewdocument'] = 'Voir le document ONLYOFFICE';

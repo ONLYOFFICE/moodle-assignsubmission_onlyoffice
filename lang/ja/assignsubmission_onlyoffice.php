@@ -23,13 +23,13 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = '形式 (ONLYOFFICE)';
-$string['enablecomment'] = '学生のコメントを有効にする';
-$string['enablecomment:label'] = '採点済みファイルに対する学生のフィードバック';
-$string['enablecomment_help'] = 'Если эта функция включена, учащиеся смогут оставлять комментарии непосредственно в документе ONLYOFFICE после того, как вы оцените их работу.';
+$string['enablecomment'] = 'Allow students to comment inside the document after grading';
+$string['enablecomment:label'] = '採点済みONLYOFFICEファイルに対する学生のフィードバック';
+$string['enablecomment_help'] = 'この機能を有効にすると、提出物を採点した後、学生はONLYOFFICEドキュメント内に直接コメントを残すことができます。';
 $string['enabled'] = 'ONLYOFFICEの文書';
-$string['enabled_help'] = 'Если эта функция включена, студенты могут отправлять документы ONLYOFFICE прямо в браузере. Вы можете задать формат отправляемого файла или создать шаблон для студентов.
+$string['enabled_help'] = 'If enabled, students can submit ONLYOFFICE documents directly in the browser. You can set the format of the submitted file or create a template for students.
 
-For more information, visit <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">Help Center</a>.
+詳細については、 <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">ヘルプセンター</a>をご覧ください。';
 $string['filenotfound'] = 'ファイルが見つかりません';
 $string['formnotready'] = 'フォームの準備がまだできていません。 しばらくお待ちいただき、ページを再読み込みしてください。';
 $string['hassubmissionswarning'] = '学生が作業を提出した後は、ファイルテンプレートを変更することはできません。';
@@ -43,4 +43,5 @@ $string['templatetype'] = 'ファイルテンプレート（ONLYOFFICE）';
 $string['templatetype:custom'] = 'Изменить шаблон по умолчанию';
 $string['templatetype:empty'] = 'Начать с пустого документа';
 $string['templatetype_help'] = 'この設定は、ファイルが空の状態から開始するか、またはあらかじめ定義された内容から開始するかを決定します。利用可能なオプションは次のとおりです。<br/><ul class="template-type-help"><li>空： ファイルは空白で、学生はすべてのファイルタイプ （DOCX、XLSX、PPTX、PDF） を編集できます。</li><li>カスタム： ファイルの内容を事前に定義できます。学生は DOCX、XLSX、および PPTX ファイルを編集できますが、PDF ファイルは記入のみ可能で、編集はできません。</li></ul>';
+$string['uploadfile'] = 'ファイルをアップロード';
 $string['viewdocument'] = 'ONLYOFFICE文書を見る';
