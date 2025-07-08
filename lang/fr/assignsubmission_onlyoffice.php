@@ -23,25 +23,25 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['assignformat'] = 'Format (ONLYOFFICE)';
-$string['enablecomment'] = 'Autoriser les commentaires des étudiants';
-$string['enablecomment:label'] = 'Retour des étudiants sur les fichiers ONLYOFFICE notés';
+$string['enablecomment'] = 'Permettre aux étudiants de faire des commentaires à l\'intérieur du document après la notation';
+$string['enablecomment:label'] = 'Retour des étudiants sur les documents ONLYOFFICE notés';
 $string['enablecomment_help'] = 'Si cette option est activée, les étudiants pourront laisser des commentaires directement à l\'intérieur du document ONLYOFFICE après que vous ayez noté leur travail.';
 $string['enabled'] = 'Document ONLYOFFICE';
-$string['enabled_help'] = 'Если эта функция включена, студенты могут отправлять документы ONLYOFFICE прямо в браузере. Вы можете задать формат отправляемого файла или создать шаблон для студентов.
+$string['enabled_help'] = 'Si cette option est activée, les étudiants peuvent soumettre des documents ONLYOFFICE directement dans le navigateur. Vous pouvez définir le format du fichier soumis ou créer un modèle pour les étudiants.
 
 Pour plus d\'informations, visitez le <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">Centre d\'aide</a>.';
 $string['filenotfound'] = 'Fichier introuvable';
 $string['formnotready'] = 'Le formulaire n\'est pas encore prêt. Veuillez patienter un instant et recharger la page.';
 $string['hassubmissionswarning'] = 'Le modèle de fichier ne peut pas être modifié une fois que les étudiants ont soumis leur travail.';
 $string['mentionmessage'] = '{$a->type} <b>{$a->name}</b> a commenté <b>{$a->document}</b>. Pour vérifier, ouvrez le fichier.';
-$string['mentionmessage:gotofile'] = 'Перейдите к <a href="{$a->url}">отправке задания</a>, чтобы проверить комментарии';
+$string['mentionmessage:gotofile'] = 'Passez à la <a href="{$a->url}">soumission</a> pour vérifier le(s) commentaire(s)';
 $string['mentionsubject'] = 'Nouveau commentaire de {$a->type}';
 $string['messageprovider:submissioncommentnotifier'] = 'Notification de commentaires sur le document de soumission ONLYOFFICE';
 $string['pdfformname'] = 'Formulaire';
 $string['pluginname'] = 'Document ONLYOFFICE';
 $string['templatetype'] = 'Modèle de fichier (ONLYOFFICE)';
-$string['templatetype:custom'] = 'Изменить шаблон по умолчанию';
-$string['templatetype:empty'] = 'Начать с пустого документа';
+$string['templatetype:custom'] = 'Modifier le modèle par défaut';
+$string['templatetype:empty'] = 'Commencer avec un document vide';
 $string['templatetype_help'] = 'Ce paramètre détermine si le fichier démarre vide ou avec un contenu prédéfini. Les options disponibles sont : <br/><ul class="template-type-help"><li>Vide : Le fichier sera vide et les étudiants pourront modifier tous les types de fichiers (DOCX, XLSX, PPTX, PDF).</li><li>Personnalisé : Vous pouvez prédéfinir le contenu du fichier. Les étudiants peuvent modifier les fichiers DOCX, XLSX et PPTX, mais les fichiers PDF ne seront disponibles que pour être remplis, et non pour être modifiés.</li></ul>';
 $string['uploadfile'] = 'Envoyer un fichier';
 $string['viewdocument'] = 'Voir le document ONLYOFFICE';

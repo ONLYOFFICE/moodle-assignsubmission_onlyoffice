@@ -24,7 +24,7 @@
  */
 $string['assignformat'] = 'Formato (ONLYOFFICE)';
 $string['enablecomment'] = 'Permetti agli studenti di commentare nel documento dopo la valutazione';
-$string['enablecomment:label'] = 'Feedback studenti sui file ONLYOFFICE valutati';
+$string['enablecomment:label'] = 'Feedback studenti sui documenti ONLYOFFICE valutati';
 $string['enablecomment_help'] = 'Se abilitato, gli studenti potranno lasciare commenti direttamente all\'interno del documento ONLYOFFICE dopo che avrai valutato la loro consegna.';
 $string['enabled'] = 'Documento ONLYOFFICE';
 $string['enabled_help'] = 'Se abilitato, gli studenti possono inviare documenti ONLYOFFICE direttamente nel browser. Puoi impostare il formato del file inviato o creare un modello per gli studenti.

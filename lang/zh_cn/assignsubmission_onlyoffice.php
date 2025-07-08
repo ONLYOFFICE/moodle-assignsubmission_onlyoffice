@@ -29,7 +29,7 @@ $string['enablecomment_help'] = '启用后，在您评分后，学生可以在 O
 $string['enabled'] = 'ONLYOFFICE 文档';
 $string['enabled_help'] = '启用后，学生可以直接在浏览器中提交 ONLYOFFICE 文档。您可以设置提交文件的格式，或为学生创建模板。
 
-For more information, visit <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">Help Center</a>.';
+想要了解更多，请访问 <a href="https://helpcenter.onlyoffice.com/integration/moodle.aspx" target="_blank">帮助中心</a>。';
 $string['filenotfound'] = '文件未找到';
 $string['formnotready'] = '表单未准备完毕。请稍候并刷新页面。';
 $string['hassubmissionswarning'] = '学生提交作业后，文件模板将无法修改。';
