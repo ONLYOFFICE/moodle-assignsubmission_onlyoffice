@@ -41,7 +41,7 @@ jobs:
           path: ./moodle
       - name: Copy Plugin
         run: |
-          cp -r onlyoffice ./moodle/mod/assign/submission/onlyoffice
+          cp -r onlyoffice ./moodle/public/mod/assign/submission/onlyoffice
       - name: Build Plugin
         run: |
           cd ./moodle
@@ -49,13 +49,13 @@ jobs:
           grunt
       - name: Zip Artifact
         run: |
-          cd moodle/mod/assign/submission
+          cd moodle/public/mod/assign/submission
           mv ./onlyoffice ./moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}
           zip -r moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}.zip moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}/
       - name: Create Release
         uses: ncipollo/release-action@v1
         id: create_release
         with:
-          artifacts: "moodle/mod/assign/submission/moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}.zip"
+          artifacts: "moodle/public/mod/assign/submission/moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}.zip"
           bodyFile: RELEASE.md
           tag: v${{ steps.info.outputs.version }}
