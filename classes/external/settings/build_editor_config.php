@@ -37,7 +37,6 @@ use mod_onlyofficeeditor\onlyoffice_file_utility;
  * Settings editor config builder external function class
  */
 class build_editor_config extends external_api {
-
     /**
      * Returns description of method parameters
      * @return external_function_parameters

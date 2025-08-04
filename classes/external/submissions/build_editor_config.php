@@ -40,7 +40,6 @@ use mod_onlyofficeeditor\onlyoffice_file_utility;
  * Submission editor config builder external function class
  */
 class build_editor_config extends external_api {
-
     /**
      * Returns description of method parameters
      * @return external_function_parameters
@@ -100,7 +99,7 @@ class build_editor_config extends external_api {
         $file = null;
         $groupmode = false;
 
-        list($context, $course, $cm) = get_context_info_array($contextid);
+        [$context, $course, $cm] = get_context_info_array($contextid);
         $assign = new \assign($context, $cm, $course);
 
         // Get the ONLYOFFICE submission plugin.

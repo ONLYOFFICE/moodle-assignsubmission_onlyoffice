@@ -31,7 +31,6 @@ use mod_onlyofficeeditor\document_service;
  * Class for plugin utils
  */
 class utility {
-
     /**
      * Get actuall form format.
      *

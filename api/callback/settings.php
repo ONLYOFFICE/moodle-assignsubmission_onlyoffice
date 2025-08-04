@@ -26,8 +26,8 @@ use assignsubmission_onlyoffice\local\http\handlers\callback\settings_callback_h
 use assignsubmission_onlyoffice\local\http\requests\callback\settings_callback_request;
 
 // phpcs:ignore moodle.Files.RequireLogin.Missing
-require_once(__DIR__.'/../../../../../../config.php');
-require_once(__DIR__.'/../../../../locallib.php');
+require_once(__DIR__ . '/../../../../../../config.php');
+require_once(__DIR__ . '/../../../../locallib.php');
 // phpcs:enable
 
 try {

@@ -33,7 +33,6 @@ use stored_file;
  * Class wrapper for management of onlyoffice plugin files
  */
 class filemanager {
-
     /**
      * File name maximum length
      */
@@ -454,7 +453,13 @@ class filemanager {
             $contextid,
             self::COMPONENT_NAME,
             $filearea,
-            $itemid, '', false, 0, 0, 1);
+            $itemid,
+            '',
+            false,
+            0,
+            0,
+            1
+        );
 
         $file = reset($files);
         if (!$file) {

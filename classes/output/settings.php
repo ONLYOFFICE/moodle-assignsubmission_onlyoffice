@@ -30,7 +30,7 @@ use core\output\named_templatable;
 /**
  * Settings class for editor page template
  */
-class settings implements \renderable, named_templatable {
+class settings implements named_templatable, \renderable {
     /** @var \stdClass $data */
     private $data;
 

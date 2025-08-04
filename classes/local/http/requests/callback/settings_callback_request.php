@@ -77,7 +77,7 @@ class settings_callback_request extends callback_request {
      * @param int $contextid
      */
     private function collect_course_info($contextid) {
-        list($context, $course, $cm) = get_context_info_array($contextid);
+        [$context, $course, $cm] = get_context_info_array($contextid);
         $assign = new assign($context, $cm, $course);
         $plugin = $assign->get_submission_plugin_by_type('onlyoffice');
 

@@ -33,7 +33,6 @@ use moodle_exception;
  * Settings download handler
  */
 class settings_download_handler {
-
     /** @var settings_download_request $request */
     private $request;
 

@@ -32,7 +32,6 @@ use assignsubmission_onlyoffice\templatekey;
  * Settings callback handler
  */
 class settings_callback_handler extends callback_handler {
-
     /**
      * Constructor
      *
