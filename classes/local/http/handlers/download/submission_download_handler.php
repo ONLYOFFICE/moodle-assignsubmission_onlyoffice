@@ -32,7 +32,6 @@ use moodle_exception;
  * Submission download handler
  */
 class submission_download_handler {
-
     /** @var submission_download_request $request */
     private $request;
 

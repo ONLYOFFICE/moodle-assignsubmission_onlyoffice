@@ -36,7 +36,6 @@ use mod_onlyofficeeditor\onlyoffice_file_utility;
  * Library class for onlyoffice submission plugin extending submission plugin base class
  */
 class assign_submission_onlyoffice extends assign_submission_plugin {
-
     /**
      * Should return the name of this plugin type.
      *
@@ -67,8 +66,12 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             'upload' => get_string('uploadfile', 'assignsubmission_onlyoffice'),
         ];
 
-        $mform->addElement('select', 'assignsubmission_onlyoffice_format',
-            get_string('assignformat', 'assignsubmission_onlyoffice'), $assignformat);
+        $mform->addElement(
+            'select',
+            'assignsubmission_onlyoffice_format',
+            get_string('assignformat', 'assignsubmission_onlyoffice'),
+            $assignformat
+        );
 
         $filemanageroptions = [
             'accepted_types' => onlyoffice_file_utility::get_editable_extensions(),
@@ -85,8 +88,12 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             'custom' => get_string('templatetype:custom', 'assignsubmission_onlyoffice'),
         ];
 
-        $mform->addElement('select', 'assignsubmission_onlyoffice_template_type',
-            get_string('templatetype', 'assignsubmission_onlyoffice'), $templatetypes);
+        $mform->addElement(
+            'select',
+            'assignsubmission_onlyoffice_template_type',
+            get_string('templatetype', 'assignsubmission_onlyoffice'),
+            $templatetypes
+        );
         $mform->addHelpButton('assignsubmission_onlyoffice_template_type', 'templatetype', 'assignsubmission_onlyoffice');
 
         $mform->addElement(
@@ -158,7 +165,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             }
 
             if (property_exists($assignconfig, 'tmplkey') && $assignconfig->tmplkey) {
-                list($origintmplkey, $contextid) = templatekey::parse_contextid($assignconfig->tmplkey);
+                [$origintmplkey, $contextid] = templatekey::parse_contextid($assignconfig->tmplkey);
                 $tmplkey = $origintmplkey;
             }
         } else {
@@ -275,8 +282,10 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
         $isform = $cfg->format === 'pdf' || $cfg->format === 'docxf';
         $submissionfile = filemanager::get($contextid, $submission->id);
 
-        if ($initialfile && $submissionfile
-            && $initialfile->get_timemodified() > $submissionfile->get_timemodified()) {
+        if (
+            $initialfile && $submissionfile
+            && $initialfile->get_timemodified() > $submissionfile->get_timemodified()
+        ) {
             $submissionfile->delete();
             $submissionfile = null;
         }
@@ -292,20 +301,23 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
                 $initialfilename = $initialfile->get_filename();
                 $initialextension = strtolower(pathinfo($initialfilename, PATHINFO_EXTENSION));
 
-                $submissionfile = filemanager::create_by_initial($initialfile,
-                                                                    $submission->id,
-                                                                    $this->assignment->get_instance()->name,
-                                                                    $initialextension,
-                                                                    $submission->userid,
-                                                                    $filenamesuffix);
+                $submissionfile = filemanager::create_by_initial(
+                    $initialfile,
+                    $submission->id,
+                    $this->assignment->get_instance()->name,
+                    $initialextension,
+                    $submission->userid,
+                    $filenamesuffix
+                );
             } else {
-                $submissionfile = filemanager::create($contextid,
-                                                        $submission->id,
-                                                        $this->assignment->get_instance()->name,
-                                                        $cfg->format,
-                                                        $submission->userid,
-                                                        $filenamesuffix,
-                                                    );
+                $submissionfile = filemanager::create(
+                    $contextid,
+                    $submission->id,
+                    $this->assignment->get_instance()->name,
+                    $cfg->format,
+                    $submission->userid,
+                    $filenamesuffix,
+                );
             }
         }
 
@@ -319,8 +331,10 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
 
         $submissionfilename = $submissionfile->get_filename();
         $submissionextension = strtolower(pathinfo($submissionfilename, PATHINFO_EXTENSION));
-        if ($isform
-            && $submissionextension !== $submissionformat) {
+        if (
+            $isform
+            && $submissionextension !== $submissionformat
+        ) {
             $crypt = new \mod_onlyofficeeditor\hasher();
             $downloadhash = $crypt->get_hash([
                 'action' => 'download',
@@ -337,14 +351,18 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
             $documenturi = $storageurl . '/mod/assign/submission/onlyoffice/download.php?doc=' . $downloadhash;
             $conversionkey = filemanager::generate_key($submissionfile);
 
-            $conversionurl = document_service::get_conversion_url($documenturi,
-                                                                    $submissionextension,
-                                                                    $submissionformat,
-                                                                    $conversionkey);
+            $conversionurl = document_service::get_conversion_url(
+                $documenturi,
+                $submissionextension,
+                $submissionformat,
+                $conversionkey
+            );
 
             filemanager::write($submissionfile, $conversionurl);
-            $submissionfile->rename($submissionfile->get_filepath(),
-                                    $this->assignment->get_instance()->name . $submission->id . '.' . $submissionformat);
+            $submissionfile->rename(
+                $submissionfile->get_filepath(),
+                $this->assignment->get_instance()->name . $submission->id . '.' . $submissionformat
+            );
         }
 
         $submissionrenderable = new submission(
@@ -387,7 +405,7 @@ class assign_submission_onlyoffice extends assign_submission_plugin {
      * @param bool $showviewlink - whether or not to have a link to view the submission file.
      * @return string view text.
      */
-    public function view_summary(stdClass $submission, & $showviewlink) {
+    public function view_summary(stdClass $submission, &$showviewlink) {
         $showviewlink = false;
         $linkname = null;
 

@@ -43,7 +43,7 @@ abstract class callback_request {
     public function __construct() {
         $hash = required_param('doc', PARAM_RAW);
         $crypt = new hasher();
-        list($documenthash, $error) = $crypt->read_hash($hash);
+        [$documenthash, $error] = $crypt->read_hash($hash);
 
         if ($error || $documenthash === null) {
             throw new moodle_exception('invalidhash', 'assignsubmission_onlyoffice');
@@ -90,4 +90,3 @@ abstract class callback_request {
         }
     }
 }
-

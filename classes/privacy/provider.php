@@ -36,15 +36,14 @@ use core_privacy\local\request\contextlist;
 use mod_assign\privacy\assign_plugin_request_data;
 
 use assignsubmission_onlyoffice\filemanager;
+use mod_assign\privacy\assignsubmission_provider;
+use mod_assign\privacy\assignsubmission_user_provider;
+use core_privacy\local\metadata\provider as core_provider;
 
 /**
  * Privacy class for requesting user data.
  */
-class provider implements
-        \core_privacy\local\metadata\provider,
-        \mod_assign\privacy\assignsubmission_provider,
-        \mod_assign\privacy\assignsubmission_user_provider {
-
+class provider implements assignsubmission_provider, assignsubmission_user_provider, core_provider {
     /**
      * Return meta data about this plugin.
      *
@@ -131,15 +130,21 @@ class provider implements
         \core_plagiarism\privacy\provider::delete_plagiarism_for_context($requestdata->get_context());
 
         $fs = get_file_storage();
-        $fs->delete_area_files($requestdata->get_context()->id,
-                                filemanager::COMPONENT_NAME,
-                                filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE);
-        $fs->delete_area_files($requestdata->get_context()->id,
-                                filemanager::COMPONENT_NAME,
-                                filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE);
-        $fs->delete_area_files($requestdata->get_context()->id,
-                                filemanager::COMPONENT_NAME,
-                                filemanager::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL);
+        $fs->delete_area_files(
+            $requestdata->get_context()->id,
+            filemanager::COMPONENT_NAME,
+            filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE
+        );
+        $fs->delete_area_files(
+            $requestdata->get_context()->id,
+            filemanager::COMPONENT_NAME,
+            filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE
+        );
+        $fs->delete_area_files(
+            $requestdata->get_context()->id,
+            filemanager::COMPONENT_NAME,
+            filemanager::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL
+        );
     }
 
     /**
@@ -154,10 +159,12 @@ class provider implements
         $submissionid = $deletedata->get_pluginobject()->id;
 
         $fs = get_file_storage();
-        $fs->delete_area_files($deletedata->get_context()->id,
-                                filemanager::COMPONENT_NAME,
-                                filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
-                                $submissionid);
+        $fs->delete_area_files(
+            $deletedata->get_context()->id,
+            filemanager::COMPONENT_NAME,
+            filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
+            $submissionid
+        );
     }
 
     /**
@@ -174,10 +181,13 @@ class provider implements
             return;
         }
         $fs = get_file_storage();
-        list($sql, $params) = $DB->get_in_or_equal($deletedata->get_submissionids(), SQL_PARAMS_NAMED);
-        $fs->delete_area_files_select($deletedata->get_context()->id,
-                                        filemanager::COMPONENT_NAME,
-                                        filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
-                                        $sql, $params);
+        [$sql, $params] = $DB->get_in_or_equal($deletedata->get_submissionids(), SQL_PARAMS_NAMED);
+        $fs->delete_area_files_select(
+            $deletedata->get_context()->id,
+            filemanager::COMPONENT_NAME,
+            filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
+            $sql,
+            $params
+        );
     }
 }

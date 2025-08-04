@@ -68,7 +68,7 @@ class settings_download_request extends download_request {
      * @param int $contextid
      */
     protected function collect_course_info($contextid) {
-        list($context, $course, $cm) = get_context_info_array($contextid);
+        [$context, $course, $cm] = get_context_info_array($contextid);
 
         $canread = !empty($context) ? has_capability('moodle/course:manageactivities', $context) : true;
 

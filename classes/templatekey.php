@@ -29,7 +29,6 @@ namespace assignsubmission_onlyoffice;
  * Class wrapper for management temporary template key
  */
 class templatekey {
-
     /**
      * Get contextid by tmplkey
      *
@@ -44,7 +43,7 @@ class templatekey {
         }
 
         $contextid = 0;
-        list($origintmplkey, $contextid) = self::parse_contextid($record->value);
+        [$origintmplkey, $contextid] = self::parse_contextid($record->value);
         if ($origintmplkey !== $tmplkey) {
             return 0;
         }
