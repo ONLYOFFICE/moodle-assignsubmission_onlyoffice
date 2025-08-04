@@ -71,7 +71,7 @@ class submission_download_request extends download_request {
     protected function collect_course_info($contextid, $submissionid) {
         global $DB;
 
-        list($context, $course, $cm) = get_context_info_array($contextid);
+        [$context, $course, $cm] = get_context_info_array($contextid);
         $assign = new assign($context, $cm, $course);
 
         $submission = $DB->get_record('assign_submission', ['id' => $submissionid]);

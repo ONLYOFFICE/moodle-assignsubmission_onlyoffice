@@ -28,7 +28,6 @@ use assignsubmission_onlyoffice\filemanager;
  * Backup class for onlyoffice submission plugin extending restore subplugin base class
  */
 class restore_assignsubmission_onlyoffice_subplugin extends restore_subplugin {
-
     /**
      * Returns the paths to be handled by the subplugin at workshop level
      * @return array
@@ -58,18 +57,24 @@ class restore_assignsubmission_onlyoffice_subplugin extends restore_subplugin {
         // when a submission node is processed.
         $data->itemid = $this->get_mappingid('submission', $data->itemid);
 
-        $this->add_related_files('assignsubmission_onlyoffice',
-                                 filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
-                                 'submission',
-                                 null,
-                                 $oldsubmissionid);
+        $this->add_related_files(
+            'assignsubmission_onlyoffice',
+            filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
+            'submission',
+            null,
+            $oldsubmissionid
+        );
 
-        $this->add_related_files('assignsubmission_onlyoffice',
-                                 filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
-                                 null);
+        $this->add_related_files(
+            'assignsubmission_onlyoffice',
+            filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+            null
+        );
 
-        $this->add_related_files('assignsubmission_onlyoffice',
-                                 filemanager::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
-                                 null);
+        $this->add_related_files(
+            'assignsubmission_onlyoffice',
+            filemanager::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
+            null
+        );
     }
 }

@@ -33,7 +33,6 @@ use core_user;
  * Submission callback handler
  */
 class submission_callback_handler extends callback_handler {
-
     /**
      * Constructor
      *
@@ -148,12 +147,12 @@ class submission_callback_handler extends callback_handler {
         );
         $message->fullmessageformat = FORMAT_PLAIN;
         $message->fullmessagehtml = self::format_notification_message_html(
-                $this->request->course,
-                $this->request->cm,
-                $url->out(),
-                $usertype,
-                $userfullname,
-            );
+            $this->request->course,
+            $this->request->cm,
+            $url->out(),
+            $usertype,
+            $userfullname,
+        );
         $message->notification = 1;
         $message->contexturl = $url;
         $message->contexturlname = $this->request->cm->name;

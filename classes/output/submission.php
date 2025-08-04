@@ -30,7 +30,7 @@ use core\output\named_templatable;
 /**
  * Submission class for editor page template
  */
-class submission implements \renderable, named_templatable {
+class submission implements named_templatable, \renderable {
     /** @var \stdClass $data */
     private $data;
 
@@ -43,11 +43,13 @@ class submission implements \renderable, named_templatable {
      * @param string $format format of the file.
      * @param string $templatetype template type.
      */
-    public function __construct($contextid,
-                                $itemid,
-                                $readonly = false,
-                                $format = null,
-                                $templatetype = null) {
+    public function __construct(
+        $contextid,
+        $itemid,
+        $readonly = false,
+        $format = null,
+        $templatetype = null
+    ) {
 
         $this->data = new \stdClass();
 
