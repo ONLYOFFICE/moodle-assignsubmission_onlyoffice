@@ -18,15 +18,15 @@
  * Defines the version and other meta-info about the plugin
  *
  * @package    assignsubmission_onlyoffice
- * @copyright  2024 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'assignsubmission_onlyoffice';
-$plugin->version = 2024111300;
-$plugin->release = 'v3.0.0';
-$plugin->requires = 2020061500;
+$plugin->version = 2025080401;
+$plugin->release = 'v4.1.0';
+$plugin->requires = 2023042400;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = ['mod_onlyofficeeditor' => 2024111300];

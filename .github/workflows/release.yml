@@ -11,10 +11,10 @@ jobs:
     permissions: write-all
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22.11.0
       - name: Get Info
         run: |
           echo "version=$(grep -Eo '[0-9]+(\.[0-9]+)+' CHANGELOG.md | head -n 1)" >> $GITHUB_OUTPUT
@@ -35,13 +35,13 @@ jobs:
           cd ./newdocs
           rm -rf .git
       - name: Checkout Moodle
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: moodle/moodle
           path: ./moodle
       - name: Copy Plugin
         run: |
-          cp -r onlyoffice ./moodle/mod/assign/submission/onlyoffice
+          cp -r onlyoffice ./moodle/public/mod/assign/submission/onlyoffice
       - name: Build Plugin
         run: |
           cd ./moodle
@@ -49,13 +49,13 @@ jobs:
           grunt
       - name: Zip Artifact
         run: |
-          cd moodle/mod/assign/submission
+          cd moodle/public/mod/assign/submission
           mv ./onlyoffice ./moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}
           zip -r moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}.zip moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}/
       - name: Create Release
         uses: ncipollo/release-action@v1
         id: create_release
         with:
-          artifacts: "moodle/mod/assign/submission/moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}.zip"
+          artifacts: "moodle/public/mod/assign/submission/moodle-assignsubmission_onlyoffice-${{ steps.info.outputs.version }}.zip"
           bodyFile: RELEASE.md
           tag: v${{ steps.info.outputs.version }}

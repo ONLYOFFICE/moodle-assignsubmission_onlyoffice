@@ -1,19 +1,19 @@
 /* @module assignsubmission_onlyoffice/editor
- * @copyright  2024 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-#app-onlyoffice > iframe {
+.path-mod-assign #app-onlyoffice > iframe {
+    position: static !important; /* stylelint-disable-line declaration-no-important */
     height: 95vh;
     max-height: 60rem;
 }
 
-.assignsubmission-onlyoffice-display {
-    /* stylelint-disable-next-line declaration-no-important */
-    max-width: unset !important;
+.path-mod-assign .assignsubmission-onlyoffice-display {
+    max-width: unset !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.template-type-help {
+.path-mod-assign .template-type-help {
     list-style-position: inside;
     padding: 0;
     padding-left: 10px;

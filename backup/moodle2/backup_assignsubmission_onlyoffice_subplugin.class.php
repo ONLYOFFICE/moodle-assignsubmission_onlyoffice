@@ -18,7 +18,7 @@
  * This file contains the class for backup of this submission plugin
  *
  * @package assignsubmission_onlyoffice
- * @copyright 2024 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright 2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,7 +28,6 @@ use assignsubmission_onlyoffice\filemanager;
  * Backup class for onlyoffice submission plugin extending backup subplugin base class
  */
 class backup_assignsubmission_onlyoffice_subplugin extends backup_subplugin {
-
     /**
      * Returns the subplugin information to attach to submission element
      * @return backup_subplugin_element
@@ -37,34 +36,46 @@ class backup_assignsubmission_onlyoffice_subplugin extends backup_subplugin {
         // Create XML elements.
         $subplugin = $this->get_subplugin_element();
         $subpluginwrapper = new backup_nested_element($this->get_recommended_name());
-        $subpluginelement = new backup_nested_element('submission_onlyoffice',
-                                                      null,
-                                                      ['itemid', 'contextid']);
+        $subpluginelement = new backup_nested_element(
+            'submission_onlyoffice',
+            null,
+            ['itemid', 'contextid']
+        );
 
         // Connect XML elements into the tree.
         $subplugin->add_child($subpluginwrapper);
         $subpluginwrapper->add_child($subpluginelement);
 
-        $subpluginelement->set_source_table('files',
-                                            ['itemid' => backup::VAR_PARENTID]);
+        $subpluginelement->set_source_table(
+            'files',
+            ['itemid' => backup::VAR_PARENTID]
+        );
 
         // The parent is the submission.
-        $subpluginelement->annotate_files('assignsubmission_onlyoffice',
-                                          filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
-                                          'itemid');
+        $subpluginelement->annotate_files(
+            'assignsubmission_onlyoffice',
+            filemanager::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
+            'itemid'
+        );
 
-        $subpluginelement->set_source_table('files',
-                                            ['contextid' => backup::VAR_CONTEXTID]);
+        $subpluginelement->set_source_table(
+            'files',
+            ['contextid' => backup::VAR_CONTEXTID]
+        );
 
-        $subpluginelement->annotate_files('assignsubmission_onlyoffice',
-                                          filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
-                                          null,
-                                          $this->task->get_contextid());
+        $subpluginelement->annotate_files(
+            'assignsubmission_onlyoffice',
+            filemanager::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+            null,
+            $this->task->get_contextid()
+        );
 
-        $subpluginelement->annotate_files('assignsubmission_onlyoffice',
-                                          filemanager::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
-                                          null,
-                                          $this->task->get_contextid());
+        $subpluginelement->annotate_files(
+            'assignsubmission_onlyoffice',
+            filemanager::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
+            null,
+            $this->task->get_contextid()
+        );
 
         return $subplugin;
     }

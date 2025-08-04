@@ -19,44 +19,31 @@
  *
  * @package    assignsubmission_onlyoffice
  * @subpackage
- * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace assignsubmission_onlyoffice\output;
 
+use core\output\named_templatable;
+
 /**
- * Content class for editor page template
+ * Settings class for editor page template
  */
-class content implements \renderable, \templatable {
+class settings implements named_templatable, \renderable {
     /** @var \stdClass $data */
     private $data;
 
     /**
      * Construct
      *
-     * @param string $documentserverurl document server address.
      * @param int $contextid context identifier.
-     * @param string $itemid property of the file that is submissionid.
-     * @param bool $readonly readonly editor mode.
-     * @param string $tmplkey temporary template key.
-     * @param string $templatetype template type.
      */
-    public function __construct($documentserverurl,
-                                $contextid,
-                                $itemid,
-                                $readonly = false,
-                                $tmplkey = null,
-                                $templatetype = null) {
+    public function __construct($contextid) {
 
         $this->data = new \stdClass();
 
-        $this->data->documentserverurl = $documentserverurl;
         $this->data->contextid = $contextid;
-        $this->data->itemid = $itemid;
-        $this->data->readonly = $readonly;
-        $this->data->tmplkey = $tmplkey;
-        $this->data->templatetype = $templatetype;
     }
 
     /**
@@ -70,16 +57,25 @@ class content implements \renderable, \templatable {
         global $PAGE;
 
         $jsparams = [
-            $this->data->documentserverurl,
             $this->data->contextid,
-            $this->data->itemid,
-            $this->data->readonly,
-            $this->data->tmplkey,
-            $this->data->templatetype,
         ];
 
-        $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/editor', 'init', $jsparams);
+        $documentserverurl = get_config('onlyofficeeditor', 'documentserverurl');
+        $documentserverurl = trim($documentserverurl, '/');
+        $settingsparams = array_merge([$documentserverurl], $jsparams);
+        $PAGE->requires->js_call_amd('assignsubmission_onlyoffice/settings', 'init', $settingsparams);
 
         return $this->data;
+    }
+
+    /**
+     * Gets the name of the mustache template used to render the data.
+     *
+     * @param \renderer_base $renderer renderer to be used.
+     *
+     * @return string
+     */
+    public function get_template_name(\renderer_base $renderer): string {
+        return 'assignsubmission_onlyoffice/editor';
     }
 }

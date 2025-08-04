@@ -19,7 +19,7 @@
  *
  * @package    assignsubmission_onlyoffice
  * @subpackage
- * @copyright   2024 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright   2025 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,7 +33,6 @@ use stored_file;
  * Class wrapper for management of onlyoffice plugin files
  */
 class filemanager {
-
     /**
      * File name maximum length
      */
@@ -84,11 +83,26 @@ class filemanager {
      * @param string $name file name.
      * @param string $ext file extension.
      * @param string $userid user identifier.
+     * @param string $filenamesuffix file name suffix.
      *
      * @return stored_file
      */
-    public static function create($contextid, $itemid, $name, $ext, $userid) {
-        return self::create_base($contextid, $itemid, $name, $ext, self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE, $userid);
+    public static function create($contextid, $itemid, $name, $ext, $userid, $filenamesuffix = '') {
+        $pathname = self::get_template_path($ext);
+
+        $fs = get_file_storage();
+
+        $newfile = $fs->create_file_from_pathname((object)[
+            'contextid' => $contextid,
+            'component' => self::COMPONENT_NAME,
+            'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
+            'itemid' => $itemid,
+            'userid' => $userid,
+            'filepath' => '/',
+            'filename' => static::generate_filename($name, $filenamesuffix, $ext),
+        ], $pathname);
+
+        return $newfile;
     }
 
     /**
@@ -99,18 +113,20 @@ class filemanager {
      * @param string $name file name.
      * @param string $ext file extension.
      * @param string $userid user identifier.
+     * @param string $filenamesuffix file name suffix
      *
      * @return stored_file
      */
-    public static function create_by_initial($initial, $itemid, $name, $ext, $userid) {
+    public static function create_by_initial($initial, $itemid, $name, $ext, $userid, $filenamesuffix) {
         $fs = get_file_storage();
 
         $fr = (object)[
             'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_FILE,
             'itemid' => $itemid,
-            'filename' => static::generate_filename($name, $itemid, $ext),
+            'filename' => static::generate_filename($name, $filenamesuffix, $ext),
             'userid' => $userid,
             'timecreated' => time(),
+            'timemodified' => time(),
         ];
 
         $newfile = $fs->create_file_from_storedfile($fr, $initial);
@@ -162,14 +178,28 @@ class filemanager {
     public static function create_template_from_uploaded_file($contextid, $file) {
         $fs = get_file_storage();
 
+        $filename = 'template.' . pathinfo($file->get_filename(), PATHINFO_EXTENSION);
+
+        $templatefiles = $fs->get_area_files(
+            $contextid,
+            self::COMPONENT_NAME,
+            self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
+            0,
+        );
+
+        foreach ($templatefiles as $templatefile) {
+            $templatefile->delete();
+        }
+
         $fr = [
             'contextid' => $contextid,
             'component' => self::COMPONENT_NAME,
             'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
             'itemid' => 0,
-            'filename' => static::generate_filename('', 0, pathinfo($file->get_filename(), PATHINFO_EXTENSION)),
+            'filename' => $filename,
             'filepath' => '/',
             'userid' => $file->get_userid(),
+            'timemodified' => time(),
         ];
         return $fs->create_file_from_storedfile($fr, $file);
     }
@@ -210,12 +240,15 @@ class filemanager {
     public static function write($file, $url) {
         $fs = get_file_storage();
 
+        $filename = pathinfo($file->get_filename(), PATHINFO_FILENAME);
+        $ext = pathinfo($file->get_filename(), PATHINFO_EXTENSION);
+
         $fr = [
             'contextid' => $file->get_contextid(),
             'component' => $file->get_component(),
             'filearea' => self::FILEAREA_ONLYOFFICE_SUBMISSION_DRAFT,
             'itemid' => $file->get_itemid(),
-            'filename' => $file->get_filename() . '_temp',
+            'filename' => $filename . '_temp' . '.' . $ext,
             'filepath' => '/',
             'userid' => $file->get_userid(),
             'timecreated' => $file->get_timecreated(),
@@ -245,6 +278,7 @@ class filemanager {
             'filename' => $file->get_filename(),
             'filepath' => '/',
             'userid' => $file->get_userid(),
+            'timemodified' => time(),
         ];
 
         return $fs->create_file_from_storedfile($fr, $file);
@@ -261,14 +295,28 @@ class filemanager {
     public static function create_initial_from_uploaded_file($contextid, $file) {
         $fs = get_file_storage();
 
+        $filename = 'initial.' . pathinfo($file->get_filename(), PATHINFO_EXTENSION);
+
+        $initialfiles = $fs->get_area_files(
+            $contextid,
+            self::COMPONENT_NAME,
+            self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
+            0,
+        );
+
+        foreach ($initialfiles as $initialfile) {
+            $initialfile->delete();
+        }
+
         $fr = [
             'contextid' => $contextid,
             'component' => self::COMPONENT_NAME,
             'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
             'itemid' => 0,
-            'filename' => $file->get_filename(),
+            'filename' => $filename,
             'filepath' => '/',
             'userid' => $file->get_userid(),
+            'timemodified' => time(),
         ];
         return $fs->create_file_from_storedfile($fr, $file);
     }
@@ -282,8 +330,39 @@ class filemanager {
      * @return void
      */
     public static function write_to_initial_from_file($initial, $file) {
-        $initial->replace_file_with($file);
-        $initial->set_timemodified(time());
+        if ($initial->get_mimetype() !== $file->get_mimetype()) {
+            self::create_initial_from_file($file);
+            $initial->delete();
+        } else {
+            $initial->replace_file_with($file);
+            $initial->set_timemodified(time());
+        }
+    }
+
+    /**
+     * Delete file from onlyoffice assign initial area
+     *
+     * @param int $contextid context identifier.
+     *
+     * @return void
+     */
+    public static function delete_initial($contextid) {
+        $fs = get_file_storage();
+
+        $fs->delete_area_files($contextid, self::COMPONENT_NAME, self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL, 0);
+    }
+
+    /**
+     * Delete file from onlyoffice assign template area
+     *
+     * @param int $contextid context identifier.
+     *
+     * @return void
+     */
+    public static function delete_template($contextid) {
+        $fs = get_file_storage();
+
+        $fs->delete_area_files($contextid, self::COMPONENT_NAME, self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE, 0);
     }
 
     /**
@@ -374,7 +453,13 @@ class filemanager {
             $contextid,
             self::COMPONENT_NAME,
             $filearea,
-            $itemid, '', false, 0, 0, 1);
+            $itemid,
+            '',
+            false,
+            0,
+            0,
+            1
+        );
 
         $file = reset($files);
         if (!$file) {
@@ -453,17 +538,36 @@ class filemanager {
      * Generate valid file name
      *
      * @param string $name
-     * @param int|string $itemid
+     * @param int|string $suffix
      * @param string $ext
      * @return string
      */
-    private static function generate_filename($name, $itemid, $ext) {
-        $filename = "$name$itemid.$ext";
+    private static function generate_filename($name, $suffix, $ext) {
+        $postfix = "_$suffix.$ext";
+        $filename = "$name$postfix";
 
         if (strlen($filename) > static::FILENAME_MAXIMUM_LENGTH) {
-            $filename = substr($name, 0, static::FILENAME_MAXIMUM_LENGTH - strlen("$itemid.$ext")) . "$itemid.$ext";
+            $filename = substr($name, 0, static::FILENAME_MAXIMUM_LENGTH - strlen($postfix)) . $postfix;
         }
 
+        $filename = self::sanitize_filename($filename);
+
         return $filename;
+    }
+
+    /**
+     * Sanitize filename
+     *
+     * @param string $filename
+     * @return string
+     */
+    private static function sanitize_filename($filename) {
+        $sanitizedfilename = trim($filename);
+        // Remove any non-alphanumeric, non-whitespace characters or any of the following caracters -_~,;[]().
+        $sanitizedfilename = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $sanitizedfilename);
+        // Remove any period characters.
+        $sanitizedfilename = mb_ereg_replace("([\.]{2,})", '', $sanitizedfilename);
+
+        return $sanitizedfilename;
     }
 }
