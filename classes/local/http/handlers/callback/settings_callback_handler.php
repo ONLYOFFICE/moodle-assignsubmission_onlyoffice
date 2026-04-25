@@ -50,6 +50,10 @@ class settings_callback_handler extends callback_handler {
         $file = null;
         $canwrite = false;
 
+        if (!$this->request->context) {
+            return self::RESULT_ERROR;
+        }
+
         $canwrite = has_capability('moodle/course:manageactivities', $this->request->context, $this->request->callbackuser);
 
         if (!$canwrite) {
