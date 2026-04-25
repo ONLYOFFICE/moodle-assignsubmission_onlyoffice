@@ -74,7 +74,14 @@ abstract class callback_request {
                 }
             } else {
                 $jwtheader = !empty($modconfig->jwtheader) ? $modconfig->jwtheader : 'Authorization';
-                $token = substr(getallheaders()[$jwtheader], strlen('Bearer '));
+                $headers = array_change_key_case(getallheaders(), CASE_LOWER);
+                $headervalue = $headers[strtolower($jwtheader)] ?? null;
+
+                if (empty($headervalue) || !str_starts_with($headervalue, 'Bearer ')) {
+                    throw new moodle_exception('invalidjwt', 'assignsubmission_onlyoffice');
+                }
+
+                $token = substr($headervalue, \strlen('Bearer '));
                 try {
                     $decodedheader = \mod_onlyofficeeditor\jwt_wrapper::decode($token, $modconfig->documentserversecret);
 
