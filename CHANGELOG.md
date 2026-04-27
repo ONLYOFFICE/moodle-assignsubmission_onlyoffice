@@ -1,5 +1,9 @@
 # Change Log
 
+##
+## Changed
+- no longer supports Moodle v4.4 and earlier
+
 ## 4.1.0
 ## Added
 - support for editing assignments without submissions
