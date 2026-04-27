@@ -29,9 +29,9 @@ require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
 use assignsubmission_onlyoffice\filemanager;
 use context_system;
-use external_api;
-use external_function_parameters;
-use external_value;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
 use mod_onlyofficeeditor\configuration_manager;
 use mod_onlyofficeeditor\jwt_wrapper;
 use mod_onlyofficeeditor\onlyoffice_file_utility;
