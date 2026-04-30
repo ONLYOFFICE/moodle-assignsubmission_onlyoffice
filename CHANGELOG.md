@@ -3,6 +3,7 @@
 ##
 ## Changed
 - no longer supports Moodle v4.4 and earlier
+- preserve uploaded file names for assignments
 
 ## 4.1.0
 ## Added
