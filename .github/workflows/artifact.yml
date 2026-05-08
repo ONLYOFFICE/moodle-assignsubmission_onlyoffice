@@ -28,9 +28,11 @@ jobs:
           cd ./onlyoffice
           rm -rf ./.github/
           rm -rf ./.git/
+          rm -f ./.gitignore
           rm -rf .gitmodules
           cd ./newdocs
           rm -rf .git
+          rm -rf ./tests/
       - name: Checkout Moodle
         uses: actions/checkout@v4
         with:
