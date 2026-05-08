@@ -2,6 +2,7 @@
 
 ##
 ## Changed
+- support moodle v5.2
 - no longer supports Moodle v4.4 and earlier
 - preserve uploaded file names for assignments
 
