@@ -91,5 +91,4 @@ If you encounter technical issues or have questions, you can reach the ONLYOFFIC
 
 - 🐞 Report bugs: [GitHub issues](https://github.com/ONLYOFFICE/moodle-assignsubmission_onlyoffice/issues)
 - 💬 Forum: [ONLYOFFICE Community](https://community.onlyoffice.com/)
-- 💡 Feedback and feature suggestions: [Your voice matters](https://feedback.onlyoffice.com/forums/966080-your-voice-matters)
 - 👨‍💻 Need help for developers? [API documentation](https://api.onlyoffice.com?utm_source=github&utm_medium=cpc&utm_campaign=GitHubMoodleAssignSubmission) 
