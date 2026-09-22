@@ -71,7 +71,16 @@ abstract class download_request {
 
         if (!empty($modconfig->documentserversecret)) {
             $jwtheader = !empty($modconfig->jwtheader) ? $modconfig->jwtheader : 'Authorization';
-            $token = substr(getallheaders()[$jwtheader], strlen('Bearer '));
+
+            // Header names are case-insensitive; getallheaders() may return them
+            // in any case (lowercased under HTTP/2 / PHP-FPM / reverse proxy).
+            $headers = array_change_key_case(getallheaders(), CASE_LOWER);
+            $headervalue = $headers[strtolower($jwtheader)] ?? '';
+
+            $token = (stripos($headervalue, 'Bearer ') === 0)
+                ? substr($headervalue, strlen('Bearer '))
+                : $headervalue;
+
             try {
                 jwt_wrapper::decode($token, $modconfig->documentserversecret);
             } catch (UnexpectedValueException $e) {
