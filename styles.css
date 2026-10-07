@@ -3,7 +3,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-.path-mod-assign #app-onlyoffice > iframe {
+.path-mod-assign .assignsubmission-onlyoffice-app > iframe,
+.path-report-outline .assignsubmission-onlyoffice-app > iframe {
     position: static !important; /* stylelint-disable-line declaration-no-important */
     height: 95vh;
     max-height: 60rem;
