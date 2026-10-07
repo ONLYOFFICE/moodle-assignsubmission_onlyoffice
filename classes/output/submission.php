@@ -70,7 +70,13 @@ class submission implements named_templatable, \renderable {
     public function export_for_template($output) {
         global $PAGE;
 
+        // Generates unique identifiers for each editor on the page.
+        $this->data->containerid = \html_writer::random_id('assignsubmission-onlyoffice-');
+        $this->data->editorid = $this->data->containerid . '-editor';
+
         $jsparams = [
+            $this->data->containerid,
+            $this->data->editorid,
             $this->data->contextid,
             $this->data->itemid,
             $this->data->readonly,

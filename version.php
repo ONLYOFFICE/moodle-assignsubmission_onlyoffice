@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'assignsubmission_onlyoffice';
-$plugin->version = 2025080401;
-$plugin->release = 'v4.1.0';
+$plugin->version = 2025080402;
+$plugin->release = 'v4.1.1';
 $plugin->requires = 2023042400;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = ['mod_onlyofficeeditor' => 2024111300];

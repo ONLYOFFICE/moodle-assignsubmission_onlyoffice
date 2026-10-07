@@ -3,10 +3,110 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-.path-mod-assign #app-onlyoffice > iframe {
+/* Styles the editor on the assignment pages and the outline complete report. */
+.path-mod-assign .assignsubmission-onlyoffice-app > iframe,
+.path-report-outline .assignsubmission-onlyoffice-app > iframe {
     position: static !important; /* stylelint-disable-line declaration-no-important */
     height: 95vh;
     max-height: 60rem;
+}
+
+.path-mod-assign .assignsubmission-onlyoffice-app.assignsubmission-onlyoffice-fullscreen,
+.path-report-outline .assignsubmission-onlyoffice-app.assignsubmission-onlyoffice-fullscreen {
+    position: fixed;
+    top: var(--oo-header-height, 0px); /* stylelint-disable-line length-zero-no-unit */
+    left: 0;
+    right: 0;
+    bottom: var(--oo-footer-height, 0px); /* stylelint-disable-line length-zero-no-unit */
+    margin: 0;
+    padding: 0;
+    /* Overrides the hidden visibility of the collapsed grade panel in the grader. */
+    visibility: visible;
+    /* Above the drawers (1015) and below the navbar (1030). */
+    z-index: 1016;
+}
+
+.path-mod-assign .assignsubmission-onlyoffice-app.assignsubmission-onlyoffice-fullscreen > iframe,
+.path-report-outline .assignsubmission-onlyoffice-app.assignsubmission-onlyoffice-fullscreen > iframe {
+    height: 100%;
+    max-height: none;
+}
+
+/* Prevents the page behind the fullscreen editor from scrolling. */
+.path-mod-assign:has(.assignsubmission-onlyoffice-fullscreen),
+.path-report-outline:has(.assignsubmission-onlyoffice-fullscreen) {
+    overflow: hidden;
+}
+
+.path-mod-assign:has(.assignsubmission-onlyoffice-fullscreen) #page-footer,
+.path-report-outline:has(.assignsubmission-onlyoffice-fullscreen) #page-footer {
+    display: none;
+}
+
+/* Keeps the grader navigation popups and the saving overlay above the fullscreen editor. */
+.path-mod-assign:has(.assignsubmission-onlyoffice-fullscreen) [data-region="grading-navigation-panel"],
+.path-mod-assign:has(.assignsubmission-onlyoffice-fullscreen) [data-region="overlay"] {
+    z-index: 1017;
+}
+
+.path-mod-assign .assignsubmission-onlyoffice-fs-button,
+.path-report-outline .assignsubmission-onlyoffice-fs-button {
+    white-space: nowrap;
+}
+
+.path-mod-assign .assignsubmission-onlyoffice-enter-fs-button,
+.path-report-outline .assignsubmission-onlyoffice-enter-fs-button {
+    display: block;
+    margin-left: auto;
+    margin-bottom: 0.5rem;
+}
+
+.path-mod-assign #assignsubmission-onlyoffice-exit-fs-button,
+.path-report-outline #assignsubmission-onlyoffice-exit-fs-button {
+    display: none;
+    margin: 12px 0;
+}
+
+.path-mod-assign:has(.assignsubmission-onlyoffice-fullscreen) #assignsubmission-onlyoffice-exit-fs-button,
+.path-report-outline:has(.assignsubmission-onlyoffice-fullscreen) #assignsubmission-onlyoffice-exit-fs-button {
+    display: inline-block;
+}
+
+.path-mod-assign [data-region="grade-actions"] #assignsubmission-onlyoffice-exit-fs-button {
+    align-self: center;
+    margin: 0 0 0 0.5rem;
+}
+
+/* Shows the exit button as an icon only on smaller screens. */
+@media (max-width: 991px) {
+    .path-mod-assign #assignsubmission-onlyoffice-exit-fs-button .assignsubmission-onlyoffice-fs-button-text,
+    .path-report-outline #assignsubmission-onlyoffice-exit-fs-button .assignsubmission-onlyoffice-fs-button-text {
+        display: none;
+    }
+
+    .path-mod-assign #assignsubmission-onlyoffice-exit-fs-button .icon,
+    .path-report-outline #assignsubmission-onlyoffice-exit-fs-button .icon {
+        margin: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Disables the fullscreen mode in the stacked grader layout on small screens. */
+    .path-mod-assign:has([data-region="grade-actions-panel"]) .assignsubmission-onlyoffice-enter-fs-button {
+        display: none;
+    }
+}
+
+@media (max-width: 575px) {
+    .path-mod-assign .assignsubmission-onlyoffice-enter-fs-button .assignsubmission-onlyoffice-fs-button-text,
+    .path-report-outline .assignsubmission-onlyoffice-enter-fs-button .assignsubmission-onlyoffice-fs-button-text {
+        display: none;
+    }
+
+    .path-mod-assign .assignsubmission-onlyoffice-enter-fs-button .icon,
+    .path-report-outline .assignsubmission-onlyoffice-enter-fs-button .icon {
+        margin: 0;
+    }
 }
 
 .path-mod-assign .assignsubmission-onlyoffice-display {

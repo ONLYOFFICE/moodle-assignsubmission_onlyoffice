@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.1.1
+## Added
+- ability to open the editor in fullscreen mode
+
 ## 4.1.0
 ## Added
 - support for editing assignments without submissions

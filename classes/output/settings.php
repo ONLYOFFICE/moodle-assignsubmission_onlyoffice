@@ -44,6 +44,8 @@ class settings implements named_templatable, \renderable {
         $this->data = new \stdClass();
 
         $this->data->contextid = $contextid;
+        $this->data->containerid = 'app-onlyoffice';
+        $this->data->editorid = 'onlyoffice-editor';
     }
 
     /**
@@ -57,6 +59,8 @@ class settings implements named_templatable, \renderable {
         global $PAGE;
 
         $jsparams = [
+            $this->data->containerid,
+            $this->data->editorid,
             $this->data->contextid,
         ];
 

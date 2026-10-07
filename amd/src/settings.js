@@ -21,9 +21,11 @@
 define([
     'core/str',
     'assignsubmission_onlyoffice/repository',
-    'assignsubmission_onlyoffice/docsapi'
-], function(Str, repository, docsapi) {
-    const editorId = 'onlyoffice-editor';
+    'assignsubmission_onlyoffice/docsapi',
+    'assignsubmission_onlyoffice/fullscreen'
+], function(Str, repository, docsapi, fullscreen) {
+    let editorId = null;
+    let containerId = null;
     let docEditor = null;
 
     const openEditor = function(contextid, key, format, templatetype) {
@@ -32,6 +34,7 @@ define([
             const editorConfig = JSON.parse(config);
             // eslint-disable-next-line no-undef
             docEditor = new DocsAPI.DocEditor(editorId, editorConfig);
+            fullscreen.init(document.getElementById(containerId));
             return;
         }).catch(error => {
             // eslint-disable-next-line no-console
@@ -44,6 +47,7 @@ define([
             docEditor.destroyEditor();
             docEditor = null;
         }
+        fullscreen.remove(document.getElementById(containerId));
     };
 
     const generateUniqueId = () => {
@@ -54,7 +58,7 @@ define([
     const showDocsAPIUndefinedAlert = () => {
         const enabletoggleelement = document.querySelector('input[id="id_assignsubmission_onlyoffice_enabled"]');
 
-        const container = document.getElementById('app-onlyoffice');
+        const container = document.getElementById(containerId);
         if (container) {
             // eslint-disable-next-line promise/catch-or-return
             Str.get_string('docserverunreachable', 'onlyofficeeditor').then(function(string) {
@@ -78,7 +82,10 @@ define([
     };
 
     return {
-        init: function(documentserverurl, contextid) {
+        init: function(documentserverurl, containerid, editorid, contextid) {
+            containerId = containerid;
+            editorId = editorid;
+
             const selectformat = document.querySelector('select[id="id_assignsubmission_onlyoffice_format"]');
             const selecttemplatetype = document.querySelector('select[id="id_assignsubmission_onlyoffice_template_type"]');
             const enabletoggleelement = document.querySelector('input[id="id_assignsubmission_onlyoffice_enabled"]');
