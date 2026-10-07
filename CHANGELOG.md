@@ -1,6 +1,9 @@
 # Change Log
 
 ## 4.2.0
+## Added
+- ability to open the editor in fullscreen mode
+
 ## Changed
 - support moodle v5.2
 - no longer supports Moodle v4.4 and earlier

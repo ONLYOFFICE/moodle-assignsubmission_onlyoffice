@@ -26,12 +26,16 @@
     * none
 
     Context variables required for this template:
-    * none
+    * containerid - Identifier of the editor container
+    * editorid - Identifier of the element replaced by the editor
 
     Example context (json):
-    {}
+    {
+        "containerid": "app-onlyoffice",
+        "editorid": "onlyoffice-editor"
+    }
 
 }}
-<div id="app-onlyoffice">
-    <div id="onlyoffice-editor"></div>
+<div id="{{containerid}}" class="assignsubmission-onlyoffice-app">
+    <div id="{{editorid}}"></div>
 </div>
