@@ -70,7 +70,10 @@ class submission implements named_templatable, \renderable {
     public function export_for_template($output) {
         global $PAGE;
 
+        $this->data->containerid = \html_writer::random_id('assignsubmission-onlyoffice-');
+
         $jsparams = [
+            $this->data->containerid,
             $this->data->contextid,
             $this->data->itemid,
             $this->data->readonly,

@@ -19,6 +19,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 define([], function() {
+    var loading = null;
+
     /**
      * Load the ONLYOFFICE Document Server API script.
      *
@@ -68,7 +70,13 @@ define([], function() {
          * @return {Promise} A promise that resolves with the DocsAPI object
          */
         init: function(documentserverurl) {
-            return loadDocsApi(documentserverurl);
+            if (loading === null) {
+                loading = loadDocsApi(documentserverurl).catch(function(error) {
+                    loading = null;
+                    throw error;
+                });
+            }
+            return loading;
         }
     };
 });

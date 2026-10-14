@@ -21,28 +21,23 @@
 define([
     'core/str',
     'assignsubmission_onlyoffice/repository',
-    'assignsubmission_onlyoffice/docsapi'
-], function(Str, repository, docsapi) {
-    const editorId = 'onlyoffice-editor';
-    let docEditor = null;
+    'assignsubmission_onlyoffice/docsapi',
+    'assignsubmission_onlyoffice/editor'
+], function(Str, repository, docsapi, Editor) {
+    let editor = null;
 
-    const openEditor = function(contextid, key, format, templatetype) {
+    const openEditor = function(container, contextid, key, format, templatetype) {
         closeEditor();
-        repository.buildSettingsEditorConfig(contextid, key, format, templatetype).then(config => {
-            const editorConfig = JSON.parse(config);
-            // eslint-disable-next-line no-undef
-            docEditor = new DocsAPI.DocEditor(editorId, editorConfig);
-            return;
-        }).catch(error => {
-            // eslint-disable-next-line no-console
-            console.error('Error building editor config:', error);
-        });
+        editor = Editor.create(
+            container,
+            repository.buildSettingsEditorConfig(contextid, key, format, templatetype)
+        );
     };
 
     const closeEditor = function() {
-        if (docEditor) {
-            docEditor.destroyEditor();
-            docEditor = null;
+        if (editor) {
+            editor.destroy();
+            editor = null;
         }
     };
 
@@ -51,16 +46,15 @@ define([
                Math.floor(Math.random() * 1000).toString(16);
     };
 
-    const showDocsAPIUndefinedAlert = () => {
+    const showDocsAPIUndefinedAlert = (container) => {
         const enabletoggleelement = document.querySelector('input[id="id_assignsubmission_onlyoffice_enabled"]');
 
-        const container = document.getElementById('app-onlyoffice');
         if (container) {
             // eslint-disable-next-line promise/catch-or-return
             Str.get_string('docserverunreachable', 'onlyofficeeditor').then(function(string) {
-                const visibility = enabletoggleelement.checked ? '' : 'hidden';
+                const hiddenclass = enabletoggleelement.checked ? '' : 'hidden';
                 container.innerHTML = '<div id="docserverunreachablealert" class="alert alert-danger '
-                    + visibility + '">' + string + '</div>';
+                    + hiddenclass + '">' + string + '</div>';
                 return;
             });
         }
@@ -78,7 +72,9 @@ define([
     };
 
     return {
-        init: function(documentserverurl, contextid) {
+        init: function(documentserverurl, containerid, contextid) {
+            const container = document.getElementById(containerid);
+
             const selectformat = document.querySelector('select[id="id_assignsubmission_onlyoffice_format"]');
             const selecttemplatetype = document.querySelector('select[id="id_assignsubmission_onlyoffice_template_type"]');
             const enabletoggleelement = document.querySelector('input[id="id_assignsubmission_onlyoffice_enabled"]');
@@ -100,10 +96,14 @@ define([
             const originaltemplatekey = templatekeyelement.value;
             const originaltemplatetype = selecttemplatetype.value;
 
+            const shouldOpen = () => enabletoggleelement.checked
+                && selecttemplatetype.value === 'custom'
+                && selectformat.value !== 'upload';
+
             docsapi.init(documentserverurl).then(function() {
-                // eslint-disable-next-line promise/always-return
-                if (enabletoggleelement.checked && selecttemplatetype.value === 'custom' && selectformat.value !== 'upload') {
+                if (shouldOpen()) {
                     openEditor(
+                        container,
                         contextid,
                         templatekeyelement.value,
                         selectformat.value,
@@ -111,13 +111,11 @@ define([
                     );
                 }
 
-                enabletoggleelement.addEventListener('change', function(e) {
-                    if (e.currentTarget.checked
-                        && selectformat.value !== 'upload'
-                        && selecttemplatetype.value === 'custom'
-                    ) {
-                        if (docEditor === null) {
+                enabletoggleelement.addEventListener('change', function() {
+                    if (shouldOpen()) {
+                        if (editor === null) {
                             openEditor(
+                                container,
                                 contextid,
                                 templatekeyelement.value,
                                 selectformat.value,
@@ -136,8 +134,9 @@ define([
                         templatekeyelement.value = generateUniqueId();
                     }
 
-                    if (e.currentTarget.value !== 'upload' && selecttemplatetype.value === 'custom') {
+                    if (shouldOpen()) {
                         openEditor(
+                            container,
                             contextid,
                             templatekeyelement.value,
                             selectformat.value,
@@ -153,14 +152,15 @@ define([
                 });
 
                 selecttemplatetype.addEventListener('change', function(e) {
-                    if (e.currentTarget.value === originalformat && selecttemplatetype.value === originaltemplatetype) {
+                    if (selectformat.value === originalformat && e.currentTarget.value === originaltemplatetype) {
                         templatekeyelement.value = originaltemplatekey;
                     } else {
                         templatekeyelement.value = generateUniqueId();
                     }
 
-                    if (e.currentTarget.value === 'custom' && selectformat.value !== 'upload') {
+                    if (shouldOpen()) {
                         openEditor(
+                            container,
                             contextid,
                             templatekeyelement.value,
                             selectformat.value,
@@ -170,8 +170,9 @@ define([
                         closeEditor();
                     }
                 });
+                return;
             }).catch(function() {
-                showDocsAPIUndefinedAlert();
+                showDocsAPIUndefinedAlert(container);
                 return;
             });
         }
