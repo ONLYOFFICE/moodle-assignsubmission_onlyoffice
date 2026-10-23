@@ -37,11 +37,11 @@ jobs:
         include:
           # Highest php versions supported by each branch
           - php: 8.4
-            moodle-branch: MOODLE_502_STABLE
+            moodle-branch: MOODLE_503_STABLE
             database: pgsql
             port: 5432
           - php: 8.4
-            moodle-branch: MOODLE_502_STABLE
+            moodle-branch: MOODLE_503_STABLE
             database: mariadb
             port: 3306
           - php: 8.3
@@ -55,11 +55,11 @@ jobs:
 
           # Lowest php versions supported by each branch
           - php: 8.3
-            moodle-branch: MOODLE_502_STABLE
+            moodle-branch: MOODLE_503_STABLE
             database: pgsql
             port: 5432
           - php: 8.3
-            moodle-branch: MOODLE_502_STABLE
+            moodle-branch: MOODLE_503_STABLE
             database: mariadb
             port: 3306
           - php: 8.1
