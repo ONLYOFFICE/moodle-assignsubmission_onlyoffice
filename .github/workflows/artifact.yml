@@ -22,15 +22,7 @@ jobs:
       - name: Prepare Plugin
         run: |
           cd ${{ github.workspace }}
-          git submodule update --init --recursive
-          mkdir -p ./onlyoffice
-          rsync -av --exclude='onlyoffice' ./ ./onlyoffice
-          cd ./onlyoffice
-          rm -rf ./.github/
-          rm -rf ./.git/
-          rm -rf .gitmodules
-          cd ./newdocs
-          rm -rf .git
+          git archive --prefix=onlyoffice/ HEAD | tar -x
       - name: Checkout Moodle
         uses: actions/checkout@v4
         with:
