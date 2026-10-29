@@ -18,7 +18,7 @@
  * This file contains the class for settings callback handlers
  *
  * @package    assignsubmission_onlyoffice
- * @copyright   2025 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright   2026 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -49,6 +49,10 @@ class settings_callback_handler extends callback_handler {
     public function handle_save() {
         $file = null;
         $canwrite = false;
+
+        if (!$this->request->context) {
+            return self::RESULT_ERROR;
+        }
 
         $canwrite = has_capability('moodle/course:manageactivities', $this->request->context, $this->request->callbackuser);
 

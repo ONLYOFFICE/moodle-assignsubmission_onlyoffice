@@ -19,7 +19,7 @@
  *
  * @package    assignsubmission_onlyoffice
  * @subpackage
- * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright  2026 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -44,6 +44,7 @@ class settings implements named_templatable, \renderable {
         $this->data = new \stdClass();
 
         $this->data->contextid = $contextid;
+        $this->data->containerid = 'app-onlyoffice';
     }
 
     /**
@@ -57,6 +58,7 @@ class settings implements named_templatable, \renderable {
         global $PAGE;
 
         $jsparams = [
+            $this->data->containerid,
             $this->data->contextid,
         ];
 

@@ -15,43 +15,42 @@
 
 /**
  * @module assignsubmission_onlyoffice/submission
- * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright  2026 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 define([
     'core/str',
     'assignsubmission_onlyoffice/repository',
-    'assignsubmission_onlyoffice/docsapi'
-], function(Str, repository, docsapi) {
-    return {
-        init: function(documentserverurl, contextid, submissionid, readonly, format, templatetype) {
-            // First ensure the DocsAPI is loaded
-            // eslint-disable-next-line promise/always-return
-            docsapi.init(documentserverurl).then(function(DocsAPI) {
-                // eslint-disable-next-line promise/no-nesting
-                repository.buildSubmissionEditorConfig(contextid, submissionid, readonly, format, templatetype).then(config => {
-                    const editorConfig = JSON.parse(config);
-                    new DocsAPI.DocEditor('onlyoffice-editor', editorConfig);
-                    return;
-                }).catch(error => {
-                    // eslint-disable-next-line no-console
-                    console.error('Error building submission editor config:', error);
-                });
-            }).catch(function() {
-                const container = document.getElementById('app-onlyoffice');
-                if (container) {
-                    // eslint-disable-next-line promise/no-nesting
-                    Str.get_string('docserverunreachable', 'onlyofficeeditor')
-                        .then(function(string) {
-                            container.innerHTML = '<div class="alert alert-danger">' + string + '</div>';
-                            return;
-                        })
-                        .catch(function(error) {
-                            // eslint-disable-next-line no-console
-                            console.error('Error getting string:', error);
-                        });
-                }
+    'assignsubmission_onlyoffice/docsapi',
+    'assignsubmission_onlyoffice/editor'
+], function(Str, repository, docsapi, Editor) {
+    const showDocServerUnreachable = function(container) {
+        Str.get_string('docserverunreachable', 'onlyofficeeditor')
+            .then(function(string) {
+                container.innerHTML = '<div class="alert alert-danger">' + string + '</div>';
                 return;
+            })
+            .catch(function(error) {
+                // eslint-disable-next-line no-console
+                console.error('Error getting string:', error);
+            });
+    };
+
+    return {
+        init: function(documentserverurl, containerid, contextid, submissionid, readonly, format, templatetype) {
+            const container = document.getElementById(containerid);
+            if (!container) {
+                return;
+            }
+
+            docsapi.init(documentserverurl).then(function() {
+                Editor.create(
+                    container,
+                    repository.buildSubmissionEditorConfig(contextid, submissionid, readonly, format, templatetype)
+                );
+                return;
+            }).catch(function() {
+                showDocServerUnreachable(container);
             });
         }
     };

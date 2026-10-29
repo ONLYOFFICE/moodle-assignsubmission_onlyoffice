@@ -19,7 +19,7 @@
  *
  * @package    assignsubmission_onlyoffice
  * @subpackage
- * @copyright   2025 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright   2026 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -178,8 +178,6 @@ class filemanager {
     public static function create_template_from_uploaded_file($contextid, $file) {
         $fs = get_file_storage();
 
-        $filename = 'template.' . pathinfo($file->get_filename(), PATHINFO_EXTENSION);
-
         $templatefiles = $fs->get_area_files(
             $contextid,
             self::COMPONENT_NAME,
@@ -196,7 +194,7 @@ class filemanager {
             'component' => self::COMPONENT_NAME,
             'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_TEMPLATE,
             'itemid' => 0,
-            'filename' => $filename,
+            'filename' => self::sanitize_filename($file->get_filename()),
             'filepath' => '/',
             'userid' => $file->get_userid(),
             'timemodified' => time(),
@@ -295,8 +293,6 @@ class filemanager {
     public static function create_initial_from_uploaded_file($contextid, $file) {
         $fs = get_file_storage();
 
-        $filename = 'initial.' . pathinfo($file->get_filename(), PATHINFO_EXTENSION);
-
         $initialfiles = $fs->get_area_files(
             $contextid,
             self::COMPONENT_NAME,
@@ -313,7 +309,7 @@ class filemanager {
             'component' => self::COMPONENT_NAME,
             'filearea' => self::FILEAREA_ONLYOFFICE_ASSIGN_INITIAL,
             'itemid' => 0,
-            'filename' => $filename,
+            'filename' => self::sanitize_filename($file->get_filename()),
             'filepath' => '/',
             'userid' => $file->get_userid(),
             'timemodified' => time(),

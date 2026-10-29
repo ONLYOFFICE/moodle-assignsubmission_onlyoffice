@@ -19,7 +19,7 @@
  *
  * @package    assignsubmission_onlyoffice
  * @subpackage
- * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright  2026 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -70,7 +70,10 @@ class submission implements named_templatable, \renderable {
     public function export_for_template($output) {
         global $PAGE;
 
+        $this->data->containerid = \html_writer::random_id('assignsubmission-onlyoffice-');
+
         $jsparams = [
+            $this->data->containerid,
             $this->data->contextid,
             $this->data->itemid,
             $this->data->readonly,

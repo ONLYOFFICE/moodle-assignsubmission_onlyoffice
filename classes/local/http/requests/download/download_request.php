@@ -18,7 +18,7 @@
  * This file contains the class for download requests
  *
  * @package    assignsubmission_onlyoffice
- * @copyright   2025 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright   2026 Ascensio System SIA <integration@onlyoffice.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -71,7 +71,14 @@ abstract class download_request {
 
         if (!empty($modconfig->documentserversecret)) {
             $jwtheader = !empty($modconfig->jwtheader) ? $modconfig->jwtheader : 'Authorization';
-            $token = substr(getallheaders()[$jwtheader], strlen('Bearer '));
+            $headers = array_change_key_case(getallheaders(), CASE_LOWER);
+            $headervalue = $headers[strtolower($jwtheader)] ?? null;
+
+            if (empty($headervalue) || !str_starts_with($headervalue, 'Bearer ')) {
+                throw new moodle_exception('invalidjwt', 'assignsubmission_onlyoffice');
+            }
+
+            $token = substr($headervalue, \strlen('Bearer '));
             try {
                 jwt_wrapper::decode($token, $modconfig->documentserversecret);
             } catch (UnexpectedValueException $e) {

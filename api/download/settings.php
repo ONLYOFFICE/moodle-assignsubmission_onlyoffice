@@ -18,7 +18,7 @@
  * The assign_submission_onlyoffice callback handler for templates
  *
  * @package    assignsubmission_onlyoffice
- * @copyright  2025 Ascensio System SIA <integration@onlyoffice.com>
+ * @copyright  2026 Ascensio System SIA <integration@onlyoffice.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
