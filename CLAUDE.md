@@ -10,27 +10,15 @@ The code assumes it is installed at `mod/assign/submission/onlyoffice/`. Entry-p
 
 It is **not standalone**: `version.php` declares a minimum required version of `mod_onlyofficeeditor`. It reuses that plugin's request hashing, JWT handling, URL configuration, conversion service, file-format lists, blank templates, lang strings and AMD modules, so check the parent plugin before reimplementing any of these. The parent plugin has its own CLAUDE.md, which covers the shared auth and URL mechanisms in depth. Read it before changing anything auth-related here.
 
-Release notes go in `CHANGELOG.md`. The artifact workflow takes the package version from the first version number in that file, so the top entry must be the release being built.
-
 ## Commands
 
-CI (`.github/workflows/`) runs these moodle-plugin-ci checks. The Moodle branch, PHP and database matrix is defined there:
+CI (`.github/workflows/ci.yml`) runs the moodle-plugin-ci checks against a Moodle checkout. Read it for the commands, their flags, and the Moodle branch, PHP and database matrix; run the same commands locally. `phpcs` and `phpdoc` are zero-warning gates, so every file needs the GPL header and every class and function a full docblock.
 
-```bash
-moodle-plugin-ci phplint
-moodle-plugin-ci phpcs --max-warnings 0     # zero-warning gate
-moodle-plugin-ci phpdoc --max-warnings 0    # zero-warning gate: full docblocks + GPL header on every file
-moodle-plugin-ci validate
-moodle-plugin-ci savepoints
-moodle-plugin-ci mustache
-moodle-plugin-ci grunt --max-lint-warnings 0
-moodle-plugin-ci phpunit --fail-on-warning
-moodle-plugin-ci behat --profile chrome
-```
+Most behaviour needs a live ONLYOFFICE Docs, so verify changes on a Moodle site with both plugins installed and connected to one.
 
 Server-to-server entry points intentionally skip `require_login`. They silence the phpcs rule with a `phpcs:ignore` … `phpcs:enable` pair, and new endpoints should do the same.
 
-**AMD build.** The built `amd/build/` files are committed. Rebuild them with Moodle's `grunt amd`, run from the Moodle root with `--root` pointing at this plugin (prefix the path with `public/` on Moodle 5.1+):
+**AMD build.** The built `amd/build/` files are committed. Rebuild them with Moodle's `grunt amd`, run from the Moodle root with `--root` pointing at this plugin (prefix the path with `public/` on Moodle versions with that layout):
 
 ```bash
 npx grunt amd --root=mod/assign/submission/onlyoffice
@@ -113,8 +101,31 @@ Older releases stored forms in formats that Document Server has since replaced. 
 - The editor wrapper waits until its container is actually visible before constructing the editor, because the settings editor can sit in a hidden or collapsed part of the form.
 - Renderables in `classes/output/` pass the Document Server URL and context into the AMD `init` calls and render a shared Mustache template.
 
+## Branches and releases
+
+- PRs target `develop`. `master` holds released code; merging `develop` into it tags and releases.
+- Branch names: `<type>/<short-kebab-description>` (`feature/`, `feat/`, `fix/`, `ci/`, `chore/`, `test/`, `docs/`).
+- Commit messages follow Conventional Commits: `<type>(<optional scope>): <description>`, lowercase type (`feat`, `fix`, `refactor`, `test`, `docs`, `ci`, `build`, `chore`).
+- Add user-visible changes to the top section of `CHANGELOG.md`, under `### Added` or `### Changed`. The tag and package version come from the first version number in that file.
+- A release also needs `$plugin->version` raised and `$plugin->release` set to `'v<version>'` in `version.php`, matching the tag. When the code starts using something new from `mod_onlyofficeeditor`, raise that plugin's entry in `$plugin->dependencies` to the parent version that provides it.
+
+## Coding practices
+
+- Before writing new code, check whether the parent plugin or Moodle core already provides it through a public API (file storage, `core\http_client`/`curl`, external functions, renderables and Mustache, `core/ajax`, `core/str`, `core/modal`, `core/toast`, the `assign_submission_plugin` hooks). Use it and keep the change small.
+- Write PHP for the lowest PHP version supported by the oldest Moodle in `$plugin->requires`; the CI matrix lists it.
+- Every Moodle API you use must exist in the oldest supported Moodle and still exist in the newest one in the CI matrix. Check Moodle's `UPGRADING.md`/`upgrade.txt` notes, including mod_assign's, for anything recently added or deprecated.
+- Code must work in both Moodle directory layouts (with and without `public/`). Build file paths from `$CFG->dirroot` and the URLs sent to Document Server from the parent's `configuration_manager::get_storage_url()`.
+- Requests to Document Server go through the parent plugin's services so the internal address, JWT and certificate settings apply. Never read the parent's settings with raw `get_config()` where `configuration_manager` has a getter.
+- No superglobals (`$_GET`, `$_POST`, `$_SERVER`…): use `required_param()`/`optional_param()` and Moodle's request APIs; they are Marketplace precheck blockers.
+- New PHP classes go under `classes/` in the `assignsubmission_onlyoffice\…` namespace.
+- A new web service needs: the class under `classes/external/` (`validate_parameters()`, `validate_context()`, `require_capability()`), its entry in `db/services.php`, a raised `$plugin->version`, and a call in the AMD repository module.
+- Before relying on an ONLYOFFICE Docs API option, event or command, check in the Docs API documentation which Docs version added it. For behaviour that depends on the connected Docs version, reuse the version check in `utility::get_form_format()` rather than adding another version probe.
+- Refer to file areas and the component through the file manager's `FILEAREA_*` and `COMPONENT_NAME` constants, never string literals.
+- Throw `moodle_exception` with a key from this plugin's lang file, not an English message.
+
 ## Conventions
 
-- Editor config keys follow the ONLYOFFICE API's camelCase (`editorConfig`, `callbackUrl`, `permissions`). All other PHP uses Moodle's lowercase-no-underscore style.
-- Only `lang/en/` is authoritative. Strings shared with the parent plugin are read from the `onlyofficeeditor` component, not this one.
-- Every source file carries the Moodle GPL header. PHP and JS files also carry the `@package` / `@copyright` / `@license` docblock, and Mustache templates use Moodle's `@template` doc comment instead. Copy both from a neighbouring file of the same type. `3rd-Party.license` exists at the root and in `licenses/`, so keep both copies identical.
+- Editor config keys follow the ONLYOFFICE API's camelCase (`editorConfig`, `callbackUrl`, `permissions`). PHP variables otherwise follow Moodle's lowercase-no-underscore style.
+- `lang/en/` is the source, and every lang file holds exactly the same keys, in alphabetical order: add, rename or remove a key in **every** `lang/<code>/` file in the same change, translating new strings yourself (a human reviews them). Folder names must be Moodle language codes (`zh_cn`). Strings shared with the parent plugin are read from the `onlyofficeeditor` component, not this one.
+- Write new JavaScript as ES modules without jQuery. Pass data from PHP through the renderables in `classes/output/` and `js_call_amd()`.
+- Every PHP, JS and Mustache file carries the Moodle GPL header. PHP files also carry the `@package` / `@copyright` / `@license` docblock, JS files `@module` / `@copyright` / `@license`, and Mustache templates use Moodle's `@template` doc comment instead. Copy both from a neighbouring file of the same type. `3rd-Party.license` exists at the root and in `licenses/`, so keep both copies identical.
